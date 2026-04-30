@@ -1,0 +1,17 @@
+# Local drafts and working files — not for publication.
+# Article prose stays off GitHub to avoid duplicate-content penalties on Medium.
+*/article.md
+
+# Variant images, scratch renders, and other working artifacts.
+*/archives/
+*/support-files/
+
+# Articles with no companion code — Medium-only, kept locally for reference.
+hitl-article/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
