@@ -12,7 +12,7 @@ software architecture, and the messy intersection of all three.
 
 ## About
 
-Written by **TJ Turner** — .NET, Azure SQL, and AI tooling. Most of these
+Written by **Tim Turner** — .NET, Azure SQL, and AI tooling. Most of these
 pieces come out of real projects.
 
 - GitHub: [github.com/tj-turner](https://github.com/tj-turner)
