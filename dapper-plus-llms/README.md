@@ -2,7 +2,7 @@
 
 Companion code samples for the Medium article.
 
-**[Read the full article on Medium →](https://medium.com/@tnjturner/TODO-update-after-publish)**
+**[Read the full article on Medium →](https://medium.com/@tnjturner/dapper-llms-generating-stored-procedures-youd-actually-ship-e0f557a885e1)**
 
 ## TL;DR
 
