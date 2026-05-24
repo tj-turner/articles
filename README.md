@@ -7,6 +7,7 @@ software architecture, and the messy intersection of all three.
 
 | Article | Code | Published |
 |---|---|---|
+| [Dapper at Scale: The Stored-Procedure Lessons That Cost Me an Afternoon](https://medium.com/@tnjturner/TODO-update-after-publish) | [`dapper-at-scale/`](dapper-at-scale/) | 2026-05 |
 | [Dapper + LLMs: Generating Stored Procedures You'd Actually Ship](https://medium.com/@tnjturner/dapper-llms-generating-stored-procedures-youd-actually-ship-e0f557a885e1) | [`dapper-plus-llms/`](dapper-plus-llms/) | 2026-04 |
 | [Why Humans Must Stay in the Loop: Lessons from Building an AI-Powered Coloring Book](https://medium.com/@tnjturner/why-humans-must-stay-in-the-loop-lessons-from-building-an-ai-powered-coloring-book-005d5996d346) | — | 2026-04 |
 
