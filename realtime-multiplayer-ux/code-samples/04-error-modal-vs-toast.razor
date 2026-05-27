@@ -1,0 +1,57 @@
+@* Escalate by visual hierarchy, not message length.
+   Rule-violation errors used to flash as a 3-second toast at the bottom of the
+   screen. Players missed them and re-tried the same illegal move. The fix was
+   NOT a new component — it was one conditional. Errors render as a centered
+   alertdialog that stays until dismissed; everything else (info / success /
+   warning) stays the transient toast it always was.
+
+   Trimmed from UpAllNight.App.Pages.Game.GameBoard.razor. *@
+
+@* --- markup: same _toast state, two very different renderings --- *@
+
+@if (_toast is not null && _toastType == "error")
+{
+    @* Errors: centered modal, backdrop, explicit dismiss. Hard to miss,
+       impossible to re-fire the bad move "by accident." *@
+    <div class="game-error-backdrop" @onclick="DismissToast"></div>
+    <div class="game-error-modal" role="alertdialog">
+        <div class="game-error-title">Cannot do that</div>
+        <div class="game-error-message">@_toast</div>
+        <button class="btn btn-primary" @onclick="DismissToast">OK</button>
+    </div>
+}
+else if (_toast is not null)
+{
+    @* Everything else: the lightweight toast, auto-dismissed. *@
+    <div class="game-toast @_toastType">@_toast</div>
+}
+
+@code {
+    private string? _toast;
+    private string _toastType = "";
+
+    private void ShowToast(string message, string type)
+    {
+        _toast = message;
+        _toastType = type;
+        StateHasChanged();
+
+        // Errors stay until the player dismisses them; everything else auto-hides.
+        if (type == "error") return;
+
+        var captured = message;
+        _ = Task.Delay(3000).ContinueWith(_ =>
+        {
+            if (_toast == captured) { _toast = null; InvokeAsync(StateHasChanged); }
+        });
+    }
+
+    private void DismissToast() { _toast = null; _toastType = ""; }
+}
+
+@* Callers pick the tier at the call site — the type IS the severity:
+     ShowToast("Drew 2 cards", "info");
+     ShowToast("Melds committed!", "success");
+     ShowToast("Player left the game", "warning");
+     ShowToast($"Meld failed: {ex.Message}", "error");   // <- becomes the modal
+*@

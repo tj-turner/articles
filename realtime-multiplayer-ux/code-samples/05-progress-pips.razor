@@ -1,0 +1,49 @@
+@* A number is information; a progress bar is feedback.
+   A "book" in Hand and Foot needs 7 cards to complete. That used to be shown
+   as a count ("5 / 7") and a gold glow when finished. Newcomers didn't read it.
+   Adding a 7-pip row — one filled pip per card — made the goal legible at a
+   glance: you can SEE how close a book is to closing without doing arithmetic.
+   Cost: a for-loop and ~30 lines of CSS.
+
+   Two other UI lessons live in this same component, almost for free:
+     - Books are rendered sorted by rank (OrderBy below), so the strip reads
+       like a sorted hand instead of reshuffling every time a new book starts.
+     - The pip row carries an aria-label, so the visual feedback is also
+       announced to assistive tech.
+
+   Trimmed from UpAllNight.App.Shared.TeamBooks.razor. *@
+
+<div class="books-grid">
+    @foreach (var book in Books.OrderBy(b => RankOrder.GetValueOrDefault(b.Rank, int.MaxValue)))
+    {
+        <div class="book-card @(book.IsComplete ? "complete" : "")">
+            <div class="book-rank">@book.Rank</div>
+            <div class="book-info">
+                <span class="book-count">@book.CardCount / @BookSize</span>
+                <span class="book-type">@book.BookType</span>
+            </div>
+
+            @* The feedback that did the work: one pip per card, filled to count. *@
+            <div class="book-progress" aria-label="@book.CardCount of @BookSize cards">
+                @for (var i = 0; i < BookSize; i++)
+                {
+                    <span class="book-pip @(i < book.CardCount ? "filled" : "")"></span>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public List<BookView> Books { get; set; } = new();
+
+    private const int BookSize = 7;
+
+    // Rank order is the reading order. Sorting the strip by it stops the layout
+    // from reshuffling every time a new book is started.
+    private static readonly Dictionary<string, int> RankOrder = new()
+    {
+        { "Four", 4 }, { "Five", 5 }, { "Six", 6 }, { "Seven", 7 }, { "Eight", 8 },
+        { "Nine", 9 }, { "Ten", 10 }, { "Jack", 11 }, { "Queen", 12 }, { "King", 13 }, { "Ace", 14 }
+    };
+}
