@@ -2,7 +2,7 @@
 
 Companion code samples for the Medium article.
 
-**[Read the full article on Medium →](https://medium.com/@tnjturner/dapper-at-scale-the-stored-procedure-lessons-that-cost-me-an-afternoon-e3b1bc9cfa25)**
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/dapper-at-scale-the-stored-procedure-lessons-that-cost-me-an-afternoon-e3b1bc9cfa25)**
 
 ## TL;DR
 

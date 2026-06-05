@@ -2,7 +2,7 @@
 
 Companion code samples for the Medium article (Part 2 of *Lessons from Building UpAllNight*).
 
-**[Read the full article on Medium →](TODO-update-after-publish)**
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/real-time-multiplayer-is-a-ux-problem-not-a-transport-problem-1f6d9aa87237)**
 
 ## TL;DR
 
