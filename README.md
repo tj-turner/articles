@@ -7,6 +7,7 @@ software architecture, and the messy intersection of all three.
 
 | Article | Code | Published |
 |---|---|---|
+| [Money Is a Ledger, Not a Balance](TODO-update-after-publish) | [`money-is-a-ledger/`](money-is-a-ledger/) | TODO |
 | [Real-Time Multiplayer Is a UX Problem, Not a Transport Problem](https://levelup.gitconnected.com/real-time-multiplayer-is-a-ux-problem-not-a-transport-problem-1f6d9aa87237) | [`realtime-multiplayer-ux/`](realtime-multiplayer-ux/) | 2026-06 |
 | [Dapper at Scale: The Stored-Procedure Lessons That Cost Me an Afternoon](https://levelup.gitconnected.com/dapper-at-scale-the-stored-procedure-lessons-that-cost-me-an-afternoon-e3b1bc9cfa25) | [`dapper-at-scale/`](dapper-at-scale/) | 2026-05 |
 | [Dapper + LLMs: Generating Stored Procedures You'd Actually Ship](https://medium.com/@tnjturner/dapper-llms-generating-stored-procedures-youd-actually-ship-e0f557a885e1) | [`dapper-plus-llms/`](dapper-plus-llms/) | 2026-04 |
