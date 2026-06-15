@@ -2,7 +2,7 @@
 
 Companion code samples for the Medium article (Part 3 of *Lessons from Building UpAllNight*).
 
-**[Read the full article on Medium →](TODO-update-after-publish)**
+**[Read the full article on Medium →](https://levelup.gitconnected.com/money-is-a-ledger-not-a-balance-a5e4eb221d90)**
 
 ## TL;DR
 
