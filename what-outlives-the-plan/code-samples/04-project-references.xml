@@ -1,0 +1,118 @@
+<!--
+  Project-reference excerpts that prove the §2 layer rule is mechanical,
+  not aspirational.
+
+  The "hard rule" from CLAUDE.md is:
+    "Web and Mobile talk to Api via HTTP/SignalR only — no project
+     reference to Api, Services, or Infrastructure."
+
+  Below are the three .csproj files that demonstrate it. Notice what is
+  ABSENT — Web.csproj and Mobile.csproj contain no <ProjectReference>
+  to Api, Services, or Infrastructure. If a contributor types
+  `using UpAllNight.Api.Whatever;` inside Web, they get a build error
+  before they get a code review.
+
+  This is the second shelf the layer rule sits on. CLAUDE.md is the
+  explanation; the .csproj graph is the enforcement.
+-->
+
+<!-- ============================================================ -->
+<!-- UpAllNight.Web.csproj                                         -->
+<!-- A thin Blazor WebAssembly host. Pages live in App, not here. -->
+<!-- References ONLY App + Contracts.                              -->
+<!-- ============================================================ -->
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Allowed: shared Blazor pages + DTOs only. -->
+    <ProjectReference Include="..\UpAllNight.App\UpAllNight.App.csproj" />
+    <ProjectReference Include="..\UpAllNight.Contracts\UpAllNight.Contracts.csproj" />
+
+    <!--
+      DELIBERATELY ABSENT:
+        <ProjectReference Include="..\UpAllNight.Api\UpAllNight.Api.csproj" />
+        <ProjectReference Include="..\UpAllNight.Services\UpAllNight.Services.csproj" />
+        <ProjectReference Include="..\UpAllNight.Infrastructure\UpAllNight.Infrastructure.csproj" />
+      Adding any of these would let Web reach into server code at compile
+      time. The build graph blocks it. The rule is mechanical.
+    -->
+  </ItemGroup>
+
+</Project>
+
+
+<!-- ============================================================ -->
+<!-- UpAllNight.App.csproj                                         -->
+<!-- The shared Razor Class Library. Used by both Web and Mobile.  -->
+<!-- References ONLY Contracts.                                    -->
+<!-- ============================================================ -->
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- App only knows about the wire shape. Server projects are unreachable from here. -->
+    <ProjectReference Include="..\UpAllNight.Contracts\UpAllNight.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
+
+
+<!-- ============================================================ -->
+<!-- UpAllNight.Api.csproj                                         -->
+<!-- The server project. Allowed to reference Services and         -->
+<!-- Infrastructure. This is the OTHER side of the rule.           -->
+<!-- ============================================================ -->
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UpAllNight.Contracts\UpAllNight.Contracts.csproj" />
+    <ProjectReference Include="..\UpAllNight.Services\UpAllNight.Services.csproj" />
+    <ProjectReference Include="..\UpAllNight.Infrastructure\UpAllNight.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
+
+<!--
+  What this proves:
+
+  The CLAUDE.md hard rule and the .csproj graph are two shelves the same
+  rule sits on. The .csproj is the enforcement: a contributor who tries
+  to violate the rule gets a compile error. The CLAUDE.md is the
+  explanation: a contributor who hits the compile error knows WHY they
+  can't add the reference instead of restructuring the wrong thing to
+  make the error go away.
+
+  Either shelf alone is weaker. The combination is what compounded.
+-->
