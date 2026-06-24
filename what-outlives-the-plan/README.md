@@ -2,7 +2,7 @@
 
 Companion code samples for the Medium article (Part 4 of *Lessons from Building UpAllNight*).
 
-**[Read the full article on Medium →](TODO-update-after-publish)**
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/what-outlives-the-plan-10c14f67839e)**
 
 ## TL;DR
 
