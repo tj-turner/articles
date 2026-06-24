@@ -7,6 +7,7 @@ software architecture, and the messy intersection of all three.
 
 | Article | Code | Published |
 |---|---|---|
+| [The Rule Lives in Three Places](TODO-update-after-publish) | [`rule-in-three-places/`](rule-in-three-places/) | TODO |
 | [What Outlives the Plan](https://levelup.gitconnected.com/what-outlives-the-plan-10c14f67839e) | [`what-outlives-the-plan/`](what-outlives-the-plan/) | 2026-06 |
 | [Money Is a Ledger, Not a Balance](https://levelup.gitconnected.com/money-is-a-ledger-not-a-balance-a5e4eb221d90) | [`money-is-a-ledger/`](money-is-a-ledger/) | 2026-06 |
 | [Real-Time Multiplayer Is a UX Problem, Not a Transport Problem](https://levelup.gitconnected.com/real-time-multiplayer-is-a-ux-problem-not-a-transport-problem-1f6d9aa87237) | [`realtime-multiplayer-ux/`](realtime-multiplayer-ux/) | 2026-06 |

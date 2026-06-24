@@ -1,0 +1,53 @@
+@* ============================================================
+   RulesContent.razor — the rule, in HTML, for the player.
+   Source: src/UpAllNight.App/Shared/RulesContent.razor
+   ============================================================
+
+   This is the third of three surfaces the meld rule lives on.
+   The same .razor body is rendered by both the in-game rules
+   modal AND the /how-to-play page. Two consumers, one source.
+
+   The audience: a player who has thirty seconds before they
+   tap "got it" and go back to the game. The vocabulary is the
+   plainest of the three (no "BookType.Natural", no
+   "@Reason IN (1,2,3)") — just <strong> tags around the words
+   that matter and a structure that's scannable, not exhaustive.
+
+   The two lines that changed when the meld rule was wrong:
+    - "You may start a 2nd book of the same rank in the
+      OPPOSITE type." (Was: had to match.)
+    - "Tap an existing book to lay off cards onto it — even
+      a completed one, for extra scoring." (Was: completed
+      books were locked.)
+
+   The modal is the loudest of the three surfaces when it lies,
+   because it's the rule the player just read fifteen seconds
+   ago. Get the modal wrong, and the player taps a move the
+   modal just told them was legal, hits a refusal, and concludes
+   the game is broken.
+
+   Companion rules:
+    - MeldService.ValidateMeld (sample 01)
+    - docs/gamerules.md (sample 02)
+   ============================================================
+*@
+
+<section class="rules-section">
+    <h2>Your Turn</h2>
+    <ol>
+        <li><strong>Draw:</strong> either take 2 cards from the draw pile, or take the top 5 from the discard pile.</li>
+        <li><strong>Meld:</strong> play cards into new or existing books. Tap an existing book to lay off cards onto it — even a completed one, for extra scoring.</li>
+        <li><strong>Discard:</strong> end your turn by placing one card on the discard pile.</li>
+    </ol>
+</section>
+
+<section class="rules-section">
+    <h2>Books — Natural vs. Dirty</h2>
+    <ul>
+        <li>A <strong>natural</strong> book is 7 cards of the same rank with <em>no</em> wilds. A <strong>dirty</strong> book is 7 cards of the same rank that includes at least one wild (Joker or 2).</li>
+        <li>You may start a 2nd book of the same rank in the <strong>opposite</strong> type — e.g. close a natural 7s book and then start a dirty 7s book. A new dirty book must include at least one wild on its first meld.</li>
+        <li>While a natural book is still incomplete, you may add a wild to convert it into a dirty book — but only if your team doesn't already have a dirty book of that rank.</li>
+        <li>Once a natural book is <strong>completed</strong>, its type is locked: you can keep adding matching naturals for points, but no wilds.</li>
+        <li>Completed dirty books also accept lay-offs for additional scoring.</li>
+    </ul>
+</section>
