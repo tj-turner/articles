@@ -2,7 +2,7 @@
 
 Companion code samples for the Medium article (Part 5 of *Lessons from Building UpAllNight*).
 
-**[Read the full article on Medium →](TODO-update-after-publish)**
+**[Read the full article on Medium →](https://levelup.gitconnected.com/the-rule-lives-in-three-places-7690081dc542)**
 
 ## TL;DR
 
