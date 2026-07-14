@@ -7,6 +7,7 @@ software architecture, and the messy intersection of all three.
 
 | Article | Code | Published |
 |---|---|---|
+| [Agents That Learn From Rejection: Building a Book Factory with Claude CLI](TODO-update-after-publish) | [`agents-that-remember/`](agents-that-remember/) | TODO |
 | [The Rule Lives in Three Places](https://levelup.gitconnected.com/the-rule-lives-in-three-places-7690081dc542) | [`rule-in-three-places/`](rule-in-three-places/) | 2026-07 |
 | [What Outlives the Plan](https://levelup.gitconnected.com/what-outlives-the-plan-10c14f67839e) | [`what-outlives-the-plan/`](what-outlives-the-plan/) | 2026-06 |
 | [Money Is a Ledger, Not a Balance](https://levelup.gitconnected.com/money-is-a-ledger-not-a-balance-a5e4eb221d90) | [`money-is-a-ledger/`](money-is-a-ledger/) | 2026-06 |

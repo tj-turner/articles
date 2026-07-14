@@ -9,6 +9,12 @@
 # Articles with no companion code — Medium-only, kept locally for reference.
 hitl-article/
 
+# Internal session handoff notes — never published.
+*/HANDOFF.md
+
+# Local Claude Code config / skills — not part of the repo.
+.claude/
+
 # OS / editor noise
 .DS_Store
 Thumbs.db

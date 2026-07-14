@@ -1,0 +1,29 @@
+%% Three-part memory loop for the Claude CLI book-generator agents.
+%% Render to memory-loop.png (or .webp) for the article. A rejection enters
+%% once and propagates most-general -> most-specific; every future book
+%% inherits the fix. Outer flow is top-down (rejection in, book out); the three
+%% forms run left-to-right so the figure stays compact, not a tall stack.
+flowchart TD
+    R["📮 KDP rejects the cover<br/><i>spine text too close to the trim edge</i>"]
+
+    subgraph LOOP["The memory loop — general → specific"]
+        direction LR
+        T1["<b>The diary</b><br/>memory/…spine_text.md<br/><i>records the</i> Why"]
+        T2["<b>The law</b><br/>shared/kdp-spec.md<br/><i>every agent Reads it<br/>before a cover build</i>"]
+        T3["<b>The enforcement</b><br/>generated build.py<br/><i>empty spine, reason<br/>kept in a comment</i>"]
+        T1 -->|promoted to| T2
+        T2 -->|emitted as| T3
+    end
+
+    B["📚 Every future book inherits the fix — automatically"]
+
+    R -->|"I don't fix the book…"| T1
+    T3 --> B
+    B -.->|next rejection re-enters| R
+
+    classDef reject fill:#fde2e2,stroke:#c0392b,color:#7a1f1f;
+    classDef form fill:#e8f1fb,stroke:#2c6fb3,color:#12324f;
+    classDef ship fill:#e4f6e8,stroke:#2e8b57,color:#14522f;
+    class R reject;
+    class T1,T2,T3 form;
+    class B ship;
