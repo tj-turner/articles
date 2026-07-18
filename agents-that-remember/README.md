@@ -4,7 +4,7 @@ Companion code samples for the Medium article on building a KDP book-generation
 system with Claude CLI — and the three-part memory loop that lets it improve
 permanently every time reality corrects it.
 
-**[Read the full article on Medium →](#)** *(link pending publish)*
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/agents-that-learn-from-rejection-building-a-book-factory-with-claude-cli-aa3a81b13bd1)**
 
 ## TL;DR
 
