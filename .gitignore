@@ -12,6 +12,9 @@ hitl-article/
 # Internal session handoff notes — never published.
 */HANDOFF.md
 
+# Requirements / source-material trees behind a series — planning input, not deliverables.
+ai-infra/requirements/
+
 # Local Claude Code config / skills — not part of the repo.
 .claude/
 
