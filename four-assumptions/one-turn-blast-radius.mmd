@@ -1,0 +1,29 @@
+%% "One turn's blast radius" for the AI-infrastructure series (Article 1).
+%% Render to one-turn-blast-radius.png / .webp for the article. The spine is the
+%% real path of a single user turn; the red callouts are the four assumption
+%% inversions, each pinned to the hop where it bites. Laid out left-to-right so
+%% the figure stays wide, not a tall stack.
+flowchart LR
+    U["👤 One user<br/>message"] --> CAP{"Cap-check<br/><i>spend gate</i>"}
+    CAP -->|over cap| STOP["🛑 Turn ends before<br/>any model call"]
+    CAP -->|ok| ASM["Assemble prompt<br/>+ load history"]
+    ASM --> RET["Retrieval<br/><i>docs → context</i>"]
+    RET --> MODEL["🧠 Model call"]
+    MODEL -->|"tool call (loops)"| TOOL["Tool dispatch"]
+    TOOL --> MODEL
+    MODEL -->|final text| OUT["📤 Stream<br/>response"]
+    TOOL --> WRITE["✍️ Mutation /<br/>write"]
+
+    A1["① Content is executable<br/><i>a retrieved caption<br/>reads as a command</i>"] -.-> RET
+    A2["② Silent failure<br/><i>200 · fluent · wrong —<br/>no exception fires</i>"] -.-> MODEL
+    A3["③ Cost is non-deterministic<br/><i>10–100× token variance,<br/>same-looking turn</i>"] -.-> MODEL
+    A4["④ Retry duplicates<br/>the write<br/><i>a re-driven action<br/>is a second action</i>"] -.-> WRITE
+
+    classDef spine fill:#e8f1fb,stroke:#2c6fb3,color:#12324f;
+    classDef gate fill:#fff4d6,stroke:#c08a1e,color:#5c4310;
+    classDef ship fill:#e4f6e8,stroke:#2e8b57,color:#14522f;
+    classDef danger fill:#fde2e2,stroke:#c0392b,color:#7a1f1f;
+    class U,ASM,RET,MODEL,TOOL,WRITE spine;
+    class CAP gate;
+    class OUT,STOP ship;
+    class A1,A2,A3,A4 danger;

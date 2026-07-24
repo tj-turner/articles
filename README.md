@@ -7,6 +7,7 @@ software architecture, and the messy intersection of all three.
 
 | Article | Code | Published |
 |---|---|---|
+| [Building AI Infrastructure: Four Backend Assumptions to Rewire](TODO-update-after-publish) | [`four-assumptions/`](four-assumptions/) | TODO |
 | [Agents That Learn From Rejection: Building a Book Factory with Claude CLI](https://levelup.gitconnected.com/agents-that-learn-from-rejection-building-a-book-factory-with-claude-cli-aa3a81b13bd1) | [`agents-that-remember/`](agents-that-remember/) | 2026-07 |
 | [The Rule Lives in Three Places](https://levelup.gitconnected.com/the-rule-lives-in-three-places-7690081dc542) | [`rule-in-three-places/`](rule-in-three-places/) | 2026-07 |
 | [What Outlives the Plan](https://levelup.gitconnected.com/what-outlives-the-plan-10c14f67839e) | [`what-outlives-the-plan/`](what-outlives-the-plan/) | 2026-06 |
