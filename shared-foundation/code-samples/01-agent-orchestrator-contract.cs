@@ -16,7 +16,7 @@
 // There is no service named "orchestrator". This is a library type that compiles
 // into each consumer.
 
-namespace Ai.Foundation;
+namespace SharedAi;
 
 public interface IAgentOrchestrator
 {

@@ -18,10 +18,10 @@
 //     library can't answer it and shouldn't try — which is why the adapter has
 //     four verbs and not three.
 
-using Ai.Foundation;
+using SharedAi;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddAiFoundation(builder.Configuration);   // one extension method
+builder.Services.AddSharedAi(builder.Configuration);   // one extension method
 builder.Services.AddScoped<IConversationAccess, ConversationAccess>();
 var app = builder.Build();
 

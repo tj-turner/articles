@@ -15,11 +15,15 @@ exception. That one turn breaks four backend assumptions at once:
 
 1. **Content is inert.** No — a model reads instructions and data in the same
    token stream, so *any* retrieved document is a potential instruction source.
-   Documents are never sources of instructions, regardless of who authored them.
+   Authorship is the wrong axis; provenance channel is the right one. Anything
+   that enters the prompt at runtime is data. The only instructions are the ones
+   that shipped with the build.
 2. **Failures announce themselves.** No — an AI safety failure is a `200` with a
-   fluent, wrong answer. Detection has to be an active discipline, not an alert.
-3. **Cost is roughly fixed per request.** No — per-turn cost varies 10–100×, so
-   spend governance moves *into* the turn (a cap-check before the expensive part).
+   fluent, wrong answer. And when an alert *does* fire, it can be the wrong
+   alert: ours said "malformed request," not "a document issued a command."
+3. **Cost is roughly fixed per request.** No — two orders of magnitude between
+   the cheap turn and the expensive one, so the spend gate moves *into* the turn.
+   Prompt caching lowers the bill and widens the distribution.
 4. **Retrying is safe.** No — a model call isn't idempotent, and a re-driven
    action is a second action. Reads retry; writes get idempotency instead.
 

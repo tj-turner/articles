@@ -14,7 +14,7 @@
 // If a safety invariant can be stated in a comment, it can be stated in the
 // type instead. Then it stops being a rule anyone has to remember.
 
-namespace Ai.Foundation;
+namespace SharedAi;
 
 internal sealed class TurnState
 {

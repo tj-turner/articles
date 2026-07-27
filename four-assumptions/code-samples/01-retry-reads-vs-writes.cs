@@ -8,25 +8,41 @@
 // don't retry — they carry an idempotency key fixed before the first attempt,
 // and a re-drive collapses onto the same operation instead of repeating it.
 //
-// Uses Polly v8 (Microsoft.Extensions.Resilience) + Azure.AI style 429s.
+// Builds against Polly.Core v8 + Azure.Core. Note the two exception types below:
+// which one you get depends on which SDK you are holding, and getting it wrong
+// gives you a pipeline that compiles, reads correctly, and retries nothing.
 
+using Azure;                 // RequestFailedException  (Azure.Core)
+using System.ClientModel;    // ClientResultException   (Azure.AI.OpenAI 2.x / OpenAI v2)
 using Polly;
 using Polly.Retry;
 
-public sealed class FoundryResilience
+public sealed class ModelCallResilience
 {
     // Model + retrieval CALLS: bounded, backoff-driven retry that honors the
-    // rate-limit response. 429s on a hot region are exactly what this is for.
+    // rate-limit response. 429s under load are exactly what this is for.
     public static ResiliencePipeline BuildCallPipeline() =>
         new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions
             {
+                // Azure.AI.Inference and Azure AI Search throw RequestFailedException.
+                // Azure.AI.OpenAI 2.x throws ClientResultException, which does NOT
+                // derive from it — handle only the first and the predicate silently
+                // never matches on the SDK most readers are actually using.
                 ShouldHandle = new PredicateBuilder()
-                    .Handle<RequestFailedException>(ex => ex.Status == 429),
+                    .Handle<RequestFailedException>(ex => ex.Status == 429)
+                    .Handle<ClientResultException>(ex => ex.Status == 429),
+
                 MaxRetryAttempts = 3,
                 BackoffType      = DelayBackoffType.Exponential,
-                Delay            = TimeSpan.FromSeconds(2),   // ~2s, 4s, 8s
-                UseJitter        = true,                      // spread the retry storm
+
+                // 2s is the exponential BASE, not the delay you will observe.
+                // UseJitter switches Polly v8 to a decorrelated-jitter formula, so
+                // the real sequence is neither 2/4/8 nor monotonic — a measured run
+                // gave 2.48s, 1.67s, 3.03s. That spread is the entire point: it is
+                // what stops N pods retrying in lockstep and re-flooding the region.
+                Delay     = TimeSpan.FromSeconds(2),
+                UseJitter = true,
             })
             .Build();
 }
@@ -40,9 +56,13 @@ public sealed record WriteAction(
     string Operation,
     object Payload);
 
+public sealed record WriteResult(bool Accepted, string OperationId);
+
 public interface IWriteExecutor
 {
-    // Implementations MUST NOT wrap this in a retry policy. Safety comes from
-    // the key + a single-writer downstream, not from re-driving the call.
+    // Implementations MUST NOT wrap this in a retry policy. And the key is inert
+    // on its own — safety comes from a downstream that persists it under a
+    // uniqueness constraint and replays the stored result on a repeat. A key
+    // nobody enforces is a comment.
     Task<WriteResult> ExecuteOnceAsync(WriteAction action, CancellationToken ct);
 }
