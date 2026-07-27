@@ -1,6 +1,10 @@
 # Local drafts and working files — not for publication.
 # Article prose stays off GitHub to avoid duplicate-content penalties on Medium.
-*/article.md
+# Only README.md is published from an article folder; every other top-level .md
+# in one (article.md, submitted.md, corrected.md, …) is a working draft.
+# Note: code-samples/*.md sit two levels deep and are unaffected by this.
+*/*.md
+!*/README.md
 
 # Variant images, scratch renders, and other working artifacts.
 */archives/
