@@ -7,6 +7,7 @@ software architecture, and the messy intersection of all three.
 
 | Article | Code | Published |
 |---|---|---|
+| [The Shared Foundation: Building an AI Library You'd Actually Reuse](TODO-update-after-publish) | [`shared-foundation/`](shared-foundation/) | TODO |
 | [Building AI Infrastructure: Four Backend Assumptions to Rewire](TODO-update-after-publish) | [`four-assumptions/`](four-assumptions/) | TODO |
 | [Agents That Learn From Rejection: Building a Book Factory with Claude CLI](https://levelup.gitconnected.com/agents-that-learn-from-rejection-building-a-book-factory-with-claude-cli-aa3a81b13bd1) | [`agents-that-remember/`](agents-that-remember/) | 2026-07 |
 | [The Rule Lives in Three Places](https://levelup.gitconnected.com/the-rule-lives-in-three-places-7690081dc542) | [`rule-in-three-places/`](rule-in-three-places/) | 2026-07 |

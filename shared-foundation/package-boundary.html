@@ -1,0 +1,204 @@
+<!doctype html>
+<!--
+  "The package boundary" — figure for the shared-foundation article.
+  Hand-authored HTML/CSS rather than mermaid on purpose: the argument is carried
+  by *proportion* (thin wrappers, thick library), and mermaid lays out nodes
+  without any notion of visual weight. Palette matches one-turn-blast-radius.mmd
+  so the figures read as siblings.
+
+  Render: node render.js  ->  package-boundary.png  ->  .webp
+-->
+<meta charset="utf-8">
+<style>
+  :root {
+    --blue-fill:#e8f1fb; --blue-line:#2c6fb3; --blue-text:#12324f;
+    --amber-fill:#fff4d6; --amber-line:#c08a1e; --amber-text:#5c4310;
+    --green-fill:#e4f6e8; --green-line:#2e8b57; --green-text:#14522f;
+    --slate-fill:#eef1f5; --slate-line:#8794a2; --slate-text:#3c4753;
+    --navy:#1f4d78;
+    --sans:"Segoe UI",-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    --mono:"Cascadia Mono",Consolas,"SF Mono",Menlo,monospace;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#fff; font-family:var(--sans); }
+  #canvas { width:1040px; padding:34px 34px 30px; background:#fff; }
+
+  .eyebrow {
+    font-size:12.5px; letter-spacing:.13em; text-transform:uppercase;
+    font-weight:700; color:#8a95a3; margin-bottom:9px;
+  }
+
+  /* ---------- consuming services: deliberately thin ---------- */
+  .wrappers { display:flex; gap:18px; }
+  .wrap {
+    flex:1; background:var(--green-fill); border:1.5px solid var(--green-line);
+    border-radius:7px; padding:9px 13px 10px;
+  }
+  .wrap h4 {
+    font-size:15px; font-weight:700; color:var(--green-text);
+    margin-bottom:5px; letter-spacing:.005em;
+  }
+  .wrap .steps {
+    font-family:var(--mono); font-size:12.5px; color:#3f6b52;
+    white-space:nowrap; letter-spacing:-.012em;
+  }
+  .thinnote {
+    margin-top:7px; font-size:13px; color:#8a95a3; font-style:italic;
+    text-align:right;
+  }
+
+  /* ---------- the library slab ---------- */
+  .slab {
+    border:2.5px solid var(--navy); border-radius:11px; background:#f8fbfd;
+    padding:15px 17px 16px;
+  }
+  /* Grid so the loop/harness brackets line up exactly with the bands they cover. */
+  .slab-body { display:grid; grid-template-columns:1fr 108px; column-gap:14px; }
+  .slab-head {
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:12px; padding-bottom:9px; border-bottom:1.5px solid #d3e0ea;
+  }
+  .slab-head h3 {
+    font-size:20px; font-weight:700; color:var(--navy); letter-spacing:.005em;
+  }
+  .slab-head .sub { font-size:13.5px; color:#6b7b8a; font-style:italic; }
+
+  .band { grid-column:1; border-radius:8px; padding:10px 12px 11px; margin-bottom:9px; }
+  .b-plumb { margin-bottom:0; }
+  .band h5 {
+    font-size:11.5px; letter-spacing:.13em; text-transform:uppercase;
+    font-weight:700; margin-bottom:8px;
+  }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip {
+    font-family:var(--mono); font-size:13px; line-height:1.25;
+    padding:5px 9px; border-radius:5px; background:#fff;
+    letter-spacing:-.012em; white-space:nowrap;
+  }
+
+  .b-loop   { background:var(--blue-fill);  border:1.5px solid var(--blue-line); }
+  .b-loop h5{ color:var(--blue-text); }
+  .b-loop .chip { border:1px solid #a8c8e6; color:var(--blue-text); }
+
+  .b-safe   { background:var(--amber-fill); border:1.5px solid var(--amber-line); }
+  .b-safe h5{ color:var(--amber-text); }
+  .b-safe .chip { border:1px solid #e0c483; color:var(--amber-text); }
+
+  .b-plumb  { background:var(--slate-fill); border:1.5px solid var(--slate-line); }
+  .b-plumb h5{ color:var(--slate-text); }
+  .b-plumb .chip { border:1px solid #c3cdd7; color:var(--slate-text); }
+
+  /* ---------- loop / harness bracket ---------- */
+  .brk { position:relative; padding-left:15px; display:flex; align-items:center; }
+  .brk::before {
+    content:""; position:absolute; left:0; top:7px; bottom:7px; width:9px;
+    border:2px solid #b9c4cf; border-left:none; border-radius:0 6px 6px 0;
+  }
+  .brk span {
+    font-size:12.5px; letter-spacing:.1em; text-transform:uppercase;
+    font-weight:700; line-height:1.3;
+  }
+  .brk-loop { grid-column:2; grid-row:1; margin-bottom:9px; }
+  .brk-loop::before { border-color:var(--blue-line); }
+  .brk-loop span { color:var(--blue-text); }
+  .brk-harness { grid-column:2; grid-row:2 / span 2; }
+  .brk-harness::before { border-color:#a7936a; }
+  .brk-harness span { color:#6b5a34; }
+
+  /* ---------- connector ---------- */
+  .conn { position:relative; }
+  .conn { padding-bottom:24px; }
+  .conn .label {
+    position:absolute; left:0; right:0; top:56px; text-align:center;
+    font-size:13.5px; color:#5d6b7a; width:fit-content;
+    margin:0 auto; padding:0 11px;
+  }
+  .conn .label b { color:var(--navy); font-weight:700; }
+</style>
+
+<div id="canvas">
+
+  <div class="eyebrow">Consuming services</div>
+  <div class="wrappers">
+    <div class="wrap">
+      <h4>Chat service</h4>
+      <div class="steps">authenticate → options → call → stream</div>
+    </div>
+    <div class="wrap">
+      <h4>Partner-tool service</h4>
+      <div class="steps">authenticate → options → call → buffer</div>
+    </div>
+    <div class="wrap">
+      <h4>Partner-agent service</h4>
+      <div class="steps">authenticate → options → call → envelope</div>
+    </div>
+  </div>
+  <div class="thinnote">↑ that's the whole service. If yours does more, it owns a second loop.</div>
+
+  <div class="conn">
+    <svg width="972" height="52" style="display:block">
+      <defs>
+        <!-- Drawn pointing +x; orient="auto" rotates it to the line direction.
+             (Drawing it pointing up here would come out sideways.) -->
+        <marker id="up" markerWidth="9" markerHeight="9" refX="8.2" refY="4.5"
+                orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0.6 0.6 L8.6 4.5 L0.6 8.4 Z" fill="#1f4d78"/>
+        </marker>
+      </defs>
+      <line x1="156" y1="46" x2="816" y2="46" stroke="#1f4d78" stroke-width="2"/>
+      <line x1="156" y1="46" x2="156" y2="9" stroke="#1f4d78" stroke-width="2" marker-end="url(#up)"/>
+      <line x1="486" y1="46" x2="486" y2="9" stroke="#1f4d78" stroke-width="2" marker-end="url(#up)"/>
+      <line x1="816" y1="46" x2="816" y2="9" stroke="#1f4d78" stroke-width="2" marker-end="url(#up)"/>
+    </svg>
+    <div class="label"><b>a safety fix is written here once</b> · every service inherits it on the next version it takes</div>
+  </div>
+
+  <div class="slab">
+    <div class="slab-head">
+      <h3>The shared library</h3>
+      <div class="sub">a package, not a deployed service</div>
+    </div>
+
+    <div class="slab-body">
+      <div class="band b-loop">
+        <h5>Orchestration</h5>
+        <div class="chips">
+          <span class="chip">agent orchestrator</span>
+          <span class="chip">per-turn state</span>
+          <span class="chip">model-call loop</span>
+          <span class="chip">tool dispatch</span>
+          <span class="chip">prompt assembly</span>
+        </div>
+      </div>
+
+      <div class="band b-safe">
+        <h5>Safety primitives</h5>
+        <div class="chips">
+          <span class="chip">input PII redaction</span>
+          <span class="chip">structural fencing</span>
+          <span class="chip">doc-action separation</span>
+          <span class="chip">propose-confirm-execute</span>
+          <span class="chip">sanitization gate</span>
+          <span class="chip">trust-level propagation</span>
+          <span class="chip">tool-arg validation</span>
+        </div>
+      </div>
+
+      <div class="band b-plumb">
+        <h5>Plumbing</h5>
+        <div class="chips">
+          <span class="chip">managed-identity auth</span>
+          <span class="chip">cap-check client</span>
+          <span class="chip">billable transmitter</span>
+          <span class="chip">interaction log</span>
+          <span class="chip">model + search clients (retry)</span>
+          <span class="chip">trace emitter</span>
+        </div>
+      </div>
+
+      <div class="brk brk-loop"><span>The<br>loop</span></div>
+      <div class="brk brk-harness"><span>The<br>harness</span></div>
+    </div>
+  </div>
+
+</div>
