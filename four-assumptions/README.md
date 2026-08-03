@@ -5,7 +5,7 @@ on building real infrastructure behind an AI product. Four assumptions a decade
 of backend work taught you to trust, and how each one inverts the moment a
 language model is in the loop.
 
-**[Read the full article on Level Up Coding →](#)** *(link pending publish)*
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/building-ai-infrastructure-four-backend-assumptions-to-rewire-02115906c63b)**
 
 ## TL;DR
 
