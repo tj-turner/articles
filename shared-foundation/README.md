@@ -1,7 +1,7 @@
 # The Shared Foundation: Building an AI Library You'd Actually Reuse
 
-Companion diagram and code for the Medium article. A safety rule took an
-afternoon to write; deciding where it lived took the rest of the week and
+Companion diagram and code for the Medium article. Writing the safety rule was
+the easy part; deciding which repo owned it took the rest of the week and
 mattered more. This is the case for putting the agent loop in one shared library
 and keeping every consuming service thin enough that there's nothing left in it
 to drift.
