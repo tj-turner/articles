@@ -6,7 +6,7 @@ mattered more. This is the case for putting the agent loop in one shared library
 and keeping every consuming service thin enough that there's nothing left in it
 to drift.
 
-**[Read the full article on Level Up Coding →](#)** *(link pending publish)*
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/the-shared-foundation-building-an-ai-library-youd-actually-reuse-4b156de92bd3)**
 
 ## TL;DR
 

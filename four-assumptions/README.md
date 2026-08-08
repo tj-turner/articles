@@ -38,7 +38,9 @@ exception. That one turn breaks four backend assumptions at once:
 ## What comes next
 
 Each of these four inversions gets its own piece of infrastructure in future
-articles — a shared foundation library, content-as-code for prompts and skills,
+articles — [a shared foundation
+library](https://levelup.gitconnected.com/the-shared-foundation-building-an-ai-library-youd-actually-reuse-4b156de92bd3),
+content-as-code for prompts and skills,
 safety by composition, the async plane, and RAG as infrastructure. Every article
 stands alone; read them in any order.
 
