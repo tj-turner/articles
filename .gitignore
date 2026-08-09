@@ -28,3 +28,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Working rules for my own tooling — local only, not published.
+/CLAUDE.md
