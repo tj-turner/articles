@@ -1,0 +1,295 @@
+<!doctype html>
+<!--
+  "The check that refuses to boot" — Article 3, Content-as-Code.
+
+  Hand-authored rather than Mermaid on purpose. The figure needs two authored
+  columns of equal weight converging on one gate, and a visual separation
+  between the single success path and the four independent failures. Mermaid
+  lays out nodes without any notion of column weight, and an image generator
+  cannot be trusted with this much exact text — attribute syntax and frontmatter
+  keys have to be character-correct in an article arguing for correctness.
+
+  Palette inherited from one-turn-blast-radius.mmd (Article 1) and
+  package-boundary.html (Article 2): blue #2c6fb3, amber #c08a1e,
+  green #2e8b57, red #c0392b, navy #1f4d78.
+
+  Render:  node render-figure.js   (headless Chrome, deviceScaleFactor 2)
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The startup pairing check</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1500px;
+    padding: 44px 48px 40px;
+    background: #ffffff;
+    font-family: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: #12324f;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .figure-title {
+    font-size: 25px; font-weight: 700; letter-spacing: -0.2px;
+    margin-bottom: 4px;
+  }
+  .figure-sub {
+    font-size: 16px; color: #5a7186; margin-bottom: 30px;
+  }
+
+  /* ---- top band: two authored columns converging on the registry ---- */
+
+  .band {
+    display: grid;
+    grid-template-columns: 1fr 236px 1fr;
+    gap: 52px;
+    align-items: stretch;
+  }
+
+  .col-head {
+    display: inline-block;
+    font-size: 14px; font-weight: 700; letter-spacing: 0.9px;
+    text-transform: uppercase;
+    padding: 7px 15px; border-radius: 5px;
+    margin-bottom: 13px;
+  }
+  .col-code .col-head { background: #2c6fb3; color: #fff; }
+  .col-docs .col-head { background: #c08a1e; color: #fff; }
+
+  .col-body {
+    border-radius: 11px; padding: 15px;
+    display: flex; flex-direction: column; gap: 11px;
+  }
+  .col-code .col-body { background: #f5f9fd; border: 1px solid #cfe0ef; }
+  .col-docs .col-body { background: #fffcf3; border: 1px solid #ecdcb2; }
+
+  .card {
+    border-radius: 8px; padding: 11px 14px;
+    background: #fff;
+  }
+  .col-code .card { border: 1.5px solid #9dc0dd; }
+  .col-docs .card { border: 1.5px solid #ddc384; }
+
+  .card-name {
+    font-size: 17px; font-weight: 700; margin-bottom: 6px;
+  }
+  .col-code .card-name { color: #1f4d78; }
+  .col-docs .card-name { color: #7a5a12; }
+
+  .card-meta {
+    font-family: "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+    font-size: 13.5px; line-height: 1.65; color: #45607a;
+    white-space: nowrap;
+  }
+  .col-docs .card-meta { color: #6b5a33; }
+
+  /* the flagged fragments inside a card */
+  .bad { color: #b03024; font-weight: 600; }
+
+  /* ---- the gate ---- */
+
+  .gate-wrap {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding-top: 34px;   /* offset the column heading strip */
+  }
+  .gate {
+    position: relative;
+    width: 100%; text-align: center;
+    background: #1f4d78; color: #fff;
+    border-radius: 11px; padding: 20px 16px;
+    box-shadow: 0 3px 0 #143755;
+  }
+  /* connectors: both authored columns feed the same gate */
+  .gate::before, .gate::after {
+    content: ''; position: absolute; top: 50%;
+    width: 38px; height: 2px; background: #8aa6bd;
+  }
+  .gate::before { left: -52px; }
+  .gate::after  { right: -52px; }
+  .tip {
+    position: absolute; top: 50%; margin-top: -7px;
+    width: 0; height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+  }
+  .tip.l { left: -15px;  border-left: 11px solid #8aa6bd; }
+  .tip.r { right: -15px; border-right: 11px solid #8aa6bd; }
+  .gate-name { font-size: 20px; font-weight: 700; letter-spacing: -0.2px; }
+  .gate-note { font-size: 14px; line-height: 1.5; opacity: .82; margin-top: 6px; }
+
+  .feed { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+  .feed-line { height: 2px; background: #8aa6bd; flex: 1; }
+  .feed-label {
+    font-size: 12.5px; letter-spacing: .6px; text-transform: uppercase;
+    color: #5a7186; font-weight: 600; white-space: nowrap;
+  }
+
+  .down {
+    width: 0; height: 0; margin: 16px auto 0;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-top: 15px solid #1f4d78;
+  }
+
+  /* ---- outcomes ---- */
+
+  .outcomes { margin-top: 26px; display: flex; flex-direction: column; gap: 15px; }
+
+  .outcome {
+    border-radius: 11px; padding: 15px 19px;
+    display: flex; align-items: baseline; gap: 15px;
+  }
+  .outcome-tag {
+    font-size: 13.5px; font-weight: 700; letter-spacing: .8px;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .outcome-text { font-size: 16.5px; line-height: 1.5; }
+
+  .pass { background: #e8f7ed; border: 1.5px solid #2e8b57; }
+  .pass .outcome-tag { color: #1d6b40; }
+  .pass .outcome-text { color: #14522f; }
+
+  .fail-head {
+    background: #fdeceb; border: 1.5px solid #c0392b;
+    border-radius: 11px; padding: 15px 19px 17px;
+  }
+  .fail-head-row { display: flex; align-items: baseline; gap: 15px; margin-bottom: 14px; }
+  .fail-head-row .outcome-tag { color: #a2291d; }
+  .fail-head-row .outcome-text { color: #7a1f1f; }
+
+  .fails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .fail {
+    background: #fff; border: 1.5px solid #e0a49c;
+    border-radius: 8px; padding: 11px 13px;
+  }
+  .fail-title {
+    font-size: 15px; font-weight: 700; color: #a2291d; margin-bottom: 5px;
+  }
+  .fail-why { font-size: 13.5px; line-height: 1.5; color: #6b3a34; }
+  .fail-why code {
+    font-family: "Cascadia Mono", Consolas, Menlo, monospace;
+    font-size: 12.5px;
+  }
+
+  .footnote {
+    margin-top: 24px; font-size: 14px; color: #5a7186; line-height: 1.55;
+  }
+</style>
+</head>
+<body>
+
+  <div class="figure-title">The startup pairing check</div>
+  <div class="figure-sub">
+    A skill is two files in two places. The registry pairs them before the host starts,
+    and refuses to start when it can&rsquo;t.
+  </div>
+
+  <div class="band">
+
+    <!-- left: compiled code -->
+    <div class="col-code">
+      <div class="col-head">Compiled code</div>
+      <div class="col-body">
+        <div class="card">
+          <div class="card-name">ListInvoicesSkill</div>
+          <div class="card-meta">[Skill(id: "list-invoices", Read)]<br>[SkillClassification(Internal)]</div>
+        </div>
+        <div class="card">
+          <div class="card-name">MarkDisputedSkill</div>
+          <div class="card-meta">[Skill(id: "mark-disputed", Write)]<br>[SkillClassification(<span class="bad">Internal</span>)]</div>
+        </div>
+        <div class="card">
+          <div class="card-name">ExportLedgerSkill</div>
+          <div class="card-meta">[Skill(id: "export-ledger", Read)]</div>
+        </div>
+        <div class="card">
+          <div class="card-name">RefundPaymentSkill</div>
+          <div class="card-meta">[Skill(id: "refund-payment", <span class="bad">Read</span>)]<br><span class="bad">[SkillWrite]</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- centre: the gate -->
+    <div class="gate-wrap">
+      <div class="gate">
+        <i class="tip l"></i><i class="tip r"></i>
+        <div class="gate-name">Skill registry</div>
+        <div class="gate-note">pairs both halves<br>before the host starts</div>
+      </div>
+      <div class="down"></div>
+    </div>
+
+    <!-- right: embedded markdown -->
+    <div class="col-docs">
+      <div class="col-head">Embedded Markdown</div>
+      <div class="col-body">
+        <div class="card">
+          <div class="card-name">ListInvoices.md</div>
+          <div class="card-meta">boundTo: list-invoices<br>classification: Internal</div>
+        </div>
+        <div class="card">
+          <div class="card-name">MarkDisputed.md</div>
+          <div class="card-meta">boundTo: mark-disputed<br>classification: <span class="bad">Restricted</span></div>
+        </div>
+        <div class="card">
+          <div class="card-name">ArchiveLedger.md</div>
+          <div class="card-meta">boundTo: archive-ledger</div>
+        </div>
+        <div class="card">
+          <div class="card-name">RefundPayment.md</div>
+          <div class="card-meta">boundTo: refund-payment</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="outcomes">
+
+    <div class="outcome pass">
+      <div class="outcome-tag">When all pair</div>
+      <div class="outcome-text">
+        The tool manifest is built and the service starts. Of the four above, only
+        <b>list-invoices</b> gets that far.
+      </div>
+    </div>
+
+    <div class="fail-head">
+      <div class="fail-head-row">
+        <div class="outcome-tag">Any one of these</div>
+        <div class="outcome-text">
+          The service does not come up. Not a warning, and not a log line somebody reads later &mdash;
+          a deployment cannot proceed past a host that will not start.
+        </div>
+      </div>
+      <div class="fails">
+        <div class="fail">
+          <div class="fail-title">No description</div>
+          <div class="fail-why"><code>export-ledger</code> has a class and no file describing it. The model would be offered a tool with nothing to say what it is for.</div>
+        </div>
+        <div class="fail">
+          <div class="fail-title">No class</div>
+          <div class="fail-why"><code>archive-ledger</code> is described and nothing implements it. The manifest would advertise a capability that cannot run.</div>
+        </div>
+        <div class="fail">
+          <div class="fail-title">Classification mismatch</div>
+          <div class="fail-why"><code>mark-disputed</code>: the attribute says Internal, the description says Restricted. Two halves disagreeing about how sensitive the results are.</div>
+        </div>
+        <div class="fail">
+          <div class="fail-title">Write bit disagrees</div>
+          <div class="fail-why"><code>refund-payment</code> declares category Read and also carries <code>[SkillWrite]</code>. It would route as a write and be filed as a read.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footnote">
+    A unit test catches all four earlier and more cheaply. The startup check is the copy nobody can merge around.
+  </div>
+
+</body>
+</html>
