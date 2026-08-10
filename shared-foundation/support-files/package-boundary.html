@@ -6,7 +6,9 @@
   without any notion of visual weight. Palette matches one-turn-blast-radius.mmd
   so the figures read as siblings.
 
-  Render: node render-figure.js package-boundary.html package-boundary.png  ->  .webp
+  Render, from this directory:
+    node local/render-figure.js package-boundary.html local/package-boundary.png
+    magick local/package-boundary.png -quality 92 ../package-boundary.webp
 -->
 <meta charset="utf-8">
 <style>

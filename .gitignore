@@ -9,13 +9,12 @@
 # Variant images, scratch renders, and other working artifacts.
 */archives/
 
-# Working files for an article's figures live in support-files/ to keep the
-# article folder itself down to what a reader wants: README, header, and the
-# images the piece embeds. Everything in there is local — raw .png renders,
-# render scripts, scratch — except the diagram source, which stays committed.
-*/support-files/*
-!*/support-files/*.html
-!*/support-files/*.mmd
+# An article's figures live in support-files/ to keep the article folder itself
+# down to what a reader wants: README, header, and the images the piece embeds.
+# support-files/ is published — diagram source belongs there. Anything that is
+# only useful on this machine (raw .png renders, render scripts, rejected
+# variants, scratch) goes one level down into local/ and never ships.
+*/support-files/local/
 
 # Articles with no companion code — Medium-only, kept locally for reference.
 hitl-article/

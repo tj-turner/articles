@@ -13,9 +13,9 @@
   package-boundary.html (Article 2): blue #2c6fb3, amber #c08a1e,
   green #2e8b57, red #c0392b, navy #1f4d78.
 
-  Render:  node render-figure.js pairing-check.html pairing-check.png
-           (headless Chrome, deviceScaleFactor 2 — see render-figure.js for
-           the webp conversion)
+  Render, from this directory (headless Chrome, deviceScaleFactor 2):
+    node local/render-figure.js pairing-check.html local/pairing-check.png
+    magick local/pairing-check.png -quality 92 ../pairing-check.webp
 -->
 <html lang="en">
 <head>
