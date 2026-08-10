@@ -31,7 +31,7 @@ exception. That one turn breaks four backend assumptions at once:
 
 | File | What it is |
 |---|---|
-| [`one-turn-blast-radius.mmd`](one-turn-blast-radius.mmd) | Mermaid source for the "one turn's blast radius" diagram — the real path of a single turn, with the four assumption-failures pinned to the hops where they bite. |
+| [`support-files/one-turn-blast-radius.mmd`](support-files/one-turn-blast-radius.mmd) | Mermaid source for the "one turn's blast radius" diagram — the real path of a single turn, with the four assumption-failures pinned to the hops where they bite. |
 | [`one-turn-blast-radius.webp`](one-turn-blast-radius.webp) | Rendered diagram used in the article. |
 | [`code-samples/01-retry-reads-vs-writes.cs`](code-samples/01-retry-reads-vs-writes.cs) | The retry split from Assumption 4 — reads/model calls get bounded backoff on `429`; writes carry an idempotency key and never retry. The point is the split, not the Polly config. |
 

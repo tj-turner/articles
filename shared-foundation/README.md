@@ -34,7 +34,7 @@ to drift.
 
 | File | What it is |
 |---|---|
-| [`package-boundary.html`](package-boundary.html) | Source for the "package boundary" figure. Hand-authored HTML/CSS rather than Mermaid on purpose — the argument is carried by *proportion* (thin consumers, thick library), and Mermaid lays out nodes without any notion of visual weight. Render with headless Chrome. |
+| [`support-files/package-boundary.html`](support-files/package-boundary.html) | Source for the "package boundary" figure. Hand-authored HTML/CSS rather than Mermaid on purpose — the argument is carried by *proportion* (thin consumers, thick library), and Mermaid lays out nodes without any notion of visual weight. Render with headless Chrome. |
 | [`package-boundary.webp`](package-boundary.webp) | Rendered figure used in the article. |
 | [`code-samples/01-agent-orchestrator-contract.cs`](code-samples/01-agent-orchestrator-contract.cs) | The loop behind one interface, plus the options record. The invariant worth stealing: every option may only *narrow* what a turn can do. |
 | [`code-samples/02-turn-state.cs`](code-samples/02-turn-state.cs) | Per-turn state with a monotonic retrieval latch, and the doc-action separation filter applied to both the manifest and each dispatch batch. |

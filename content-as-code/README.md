@@ -54,7 +54,7 @@ can't.
 | File | What it is |
 |---|---|
 | [`header-content-as-code.png`](header-content-as-code.png) / [`.webp`](header-content-as-code.webp) | Header image, 1536×864. AI-generated with Microsoft Copilot; the source render was cropped to remove the provider's watermark. |
-| [`pairing-check.html`](pairing-check.html) | Source for the startup pairing figure. Hand-authored HTML/CSS rather than Mermaid: the figure needs two authored columns of equal weight converging on one gate, and the attribute syntax and frontmatter keys have to be character-correct in an article arguing for correctness. Render with headless Chrome at `deviceScaleFactor: 2`. |
+| [`support-files/pairing-check.html`](support-files/pairing-check.html) | Source for the startup pairing figure. Hand-authored HTML/CSS rather than Mermaid: the figure needs two authored columns of equal weight converging on one gate, and the attribute syntax and frontmatter keys have to be character-correct in an article arguing for correctness. Render with headless Chrome at `deviceScaleFactor: 2`. |
 | [`pairing-check.webp`](pairing-check.webp) | Rendered figure used in the article. |
 | [`code-samples/01-agent-chat-tenant.md`](code-samples/01-agent-chat-tenant.md) | A real prompt file: frontmatter, placeholders, and prose. This is the artifact the whole article is arguing for. |
 | [`code-samples/02-prompts.cs`](code-samples/02-prompts.cs) | The typed `PromptId`, the frontmatter model, and the embedded-resource store. Note that there is no reload path and no setter — the only way to change a prompt is to ship a build. |

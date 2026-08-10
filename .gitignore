@@ -8,7 +8,14 @@
 
 # Variant images, scratch renders, and other working artifacts.
 */archives/
-*/support-files/
+
+# Working files for an article's figures live in support-files/ to keep the
+# article folder itself down to what a reader wants: README, header, and the
+# images the piece embeds. Everything in there is local — raw .png renders,
+# render scripts, scratch — except the diagram source, which stays committed.
+*/support-files/*
+!*/support-files/*.html
+!*/support-files/*.mmd
 
 # Articles with no companion code — Medium-only, kept locally for reference.
 hitl-article/
