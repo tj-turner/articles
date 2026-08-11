@@ -7,6 +7,7 @@ software architecture, and the messy intersection of all three.
 
 | Article | Code | Published |
 |---|---|---|
+| [Content-as-Code for AI: Prompts and Skills You'd Actually Review](https://levelup.gitconnected.com/content-as-code-for-ai-prompts-and-skills-youd-actually-review-6b67401d52c7) | [`content-as-code/`](content-as-code/) | 2026-08 |
 | [The Shared Foundation: Building an AI Library You'd Actually Reuse](https://levelup.gitconnected.com/the-shared-foundation-building-an-ai-library-youd-actually-reuse-4b156de92bd3) | [`shared-foundation/`](shared-foundation/) | 2026-08 |
 | [Building AI Infrastructure: Four Backend Assumptions to Rewire](https://levelup.gitconnected.com/building-ai-infrastructure-four-backend-assumptions-to-rewire-02115906c63b) | [`four-assumptions/`](four-assumptions/) | 2026-08 |
 | [Agents That Learn From Rejection: Building a Book Factory with Claude CLI](https://levelup.gitconnected.com/agents-that-learn-from-rejection-building-a-book-factory-with-claude-cli-aa3a81b13bd1) | [`agents-that-remember/`](agents-that-remember/) | 2026-07 |

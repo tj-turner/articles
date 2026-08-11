@@ -44,8 +44,10 @@ to drift.
 
 Prompts and skill definitions are the highest-leverage part of the harness — how
 the loop learns what it can touch — and they belong neither in code nor in
-config. That's the next piece. The argument for why a confirmation step isn't
-enough on its own, and what has to sit in front of it, gets its own article too.
+config. [That's the next
+piece](https://levelup.gitconnected.com/content-as-code-for-ai-prompts-and-skills-youd-actually-review-6b67401d52c7).
+The argument for why a confirmation step isn't enough on its own, and what has to
+sit in front of it, gets its own article too.
 
 ## License
 

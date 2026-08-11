@@ -6,7 +6,7 @@ repo. This is the case for making it a source file — embedded in the build,
 diffed in a pull request, and checked by the compiler where a human reader
 can't.
 
-**[Read the full article on Level Up Coding →](#)** *(link pending publish)*
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/content-as-code-for-ai-prompts-and-skills-youd-actually-review-6b67401d52c7)**
 
 ## TL;DR
 
