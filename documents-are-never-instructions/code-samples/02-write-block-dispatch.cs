@@ -15,13 +15,16 @@
 //      brought with it is not structural, whatever the prose around it claims.
 //      An id the catalog does not know is refused rather than dispatched.
 //
-//   3. A blocked call gets a refusal result, never silence. The provider APIs
-//      this runs against reject the next request when an emitted tool call has no
-//      paired result — so a bare .Where(...) filter over the batch breaks the loop
-//      on the following turn. Article 2 committed this as that .Where filter; this
-//      file is the correction. Silence also leaves the model having emitted an
-//      approval and heard nothing, and the likeliest completion is a confident
-//      report that the payment went through.
+//   3. A blocked call gets a refusal result, never silence. The reason that bites
+//      is the model: one that emitted an approval and heard nothing back will
+//      complete with a confident report that the payment went through.
+//
+//      There is a protocol reason too, and it is weaker than it looks. The
+//      documented request shape pairs every emitted tool call with a result, so a
+//      bare .Where(...) filter over the batch should leave the following request
+//      malformed. We have not hit that. It is a reason to write it this way, not
+//      a scar. Article 2 committed this as that .Where filter; this file is the
+//      correction either way.
 
 using SharedAi.Retrieval;
 

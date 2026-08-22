@@ -36,9 +36,10 @@ the tests proving it were testing anything.
   one: a parameterized query removes the mixing entirely, and there is no
   parameterized prompt.
 - **Never a silent drop.** A blocked write returns a policy error naming the
-  reason. Silence leaves an emitted tool call with no paired result, which both
-  major provider APIs reject on the next request — and leaves the model likely to
-  report a payment it never made.
+  reason. A model that emitted an approval and heard nothing back will report a
+  payment it never made. Silence also leaves an emitted tool call with no paired
+  result, which the documented request shapes don't allow — untested here, and a
+  reason to write it this way rather than something we ran into.
 - **A memo field is a document that didn't look like one.** Customer-typed free
   text returned by structured data reads was reaching the model outside every
   injection defense, because all of them were scoped to document retrieval. Free
