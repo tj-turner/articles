@@ -1,0 +1,255 @@
+<!doctype html>
+<!--
+  "What each path passed through" — Article 4, Documents Are Never Instructions.
+
+  Hand-authored rather than Mermaid on purpose. The argument is that two walls
+  stop short: they cover document retrieval, and the third path runs clear past
+  both of them. That reading depends on the wall blocks physically not extending
+  down to the third row, and on one uninterrupted lane crossing the space where
+  they would have been. Mermaid has no notion of a node that spans some rows and
+  not others, and would draw the bypass as one more edge among edges — which is
+  the thing the figure exists to deny.
+
+  Palette inherited from one-turn-blast-radius.mmd (Article 1),
+  package-boundary.html (Article 2) and pairing-check.html (Article 3):
+  blue #2c6fb3, amber #c08a1e, green #2e8b57, red #c0392b, navy #1f4d78.
+
+  Render, from this directory (headless Chrome, deviceScaleFactor 2):
+    cd local && npm init -y && npm i puppeteer && cd ..   # deps live in local/, never ship
+    node local/render-figure.js write-block-coverage.html local/write-block-coverage.png
+    magick local/write-block-coverage.png -quality 92 -define webp:method=6 ../write-block-coverage.webp
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What each path passed through</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 1500px;
+    padding: 44px 48px 40px;
+    background: #ffffff;
+    font-family: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: #12324f;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .figure-title {
+    font-size: 25px; font-weight: 700; letter-spacing: -0.2px;
+    margin-bottom: 4px;
+  }
+  .figure-sub { font-size: 16px; color: #5a7186; margin-bottom: 26px; }
+
+  .panel-tag {
+    display: inline-block;
+    font-size: 13px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 6px 14px; border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  .tag-before { background: #eef3f8; color: #46617a; border: 1px solid #cddced; }
+  .tag-after  { background: #e8f7ed; color: #1d6b40; border: 1px solid #a9d9bd; }
+
+  /* ---- the band: sources -> two walls -> model context ---- */
+
+  .band {
+    display: grid;
+    grid-template-columns: 330px 1fr 262px 1fr 262px 1fr 232px;
+    grid-template-rows: repeat(3, auto);
+    gap: 16px 0;
+    align-items: stretch;
+  }
+
+  .src {
+    border-radius: 9px; padding: 13px 16px;
+    background: #fff;
+  }
+  .src-name { font-size: 17px; font-weight: 700; margin-bottom: 5px; }
+  .src-meta {
+    font-family: "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+    font-size: 13px; line-height: 1.6;
+  }
+
+  .src-doc { border: 1.5px solid #ddc384; background: #fffcf3; }
+  .src-doc .src-name { color: #7a5a12; }
+  .src-doc .src-meta { color: #6b5a33; }
+
+  .src-first { border: 1.5px solid #9dc0dd; background: #f5f9fd; }
+  .src-first .src-name { color: #1f4d78; }
+  .src-first .src-meta { color: #45607a; }
+
+  .src-data { border: 1.5px solid #e0a49c; background: #fdeceb; }
+  .src-data .src-name { color: #a2291d; }
+  .src-data .src-meta { color: #6b3a34; }
+
+  /* the wall blocks cover the first two rows and stop there */
+  .wall {
+    grid-row: 1 / span 2;
+    background: #1f4d78; color: #fff;
+    border-radius: 11px; padding: 20px 18px;
+    display: flex; flex-direction: column; justify-content: center;
+    text-align: center;
+    box-shadow: 0 3px 0 #143755;
+  }
+  .wall-a { grid-column: 3; }
+  .wall-b { grid-column: 5; }
+  .wall-name { font-size: 19px; font-weight: 700; letter-spacing: -0.2px; }
+  .wall-note { font-size: 13.5px; line-height: 1.5; opacity: .84; margin-top: 7px; }
+
+  /* short connectors between a source, the walls, and the context */
+  .conn { display: flex; align-items: center; justify-content: center; }
+  .conn::before { content: ''; width: 100%; height: 2px; background: #8aa6bd; }
+  .conn.arrow { position: relative; }
+  .conn.arrow::after {
+    content: ''; position: absolute; right: 0;
+    width: 0; height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 11px solid #8aa6bd;
+  }
+
+  /* the third row runs the full width of the wall band, uninterrupted */
+  .bypass {
+    grid-column: 2 / 7; grid-row: 3;
+    position: relative;
+    display: flex; align-items: center;
+  }
+  .bypass::before { content: ''; width: 100%; height: 3px; background: #c0392b; }
+  .bypass::after {
+    content: ''; position: absolute; right: 0;
+    width: 0; height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 12px solid #c0392b;
+  }
+  .bypass-label {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    bottom: 50%; margin-bottom: 9px;
+    white-space: nowrap;
+    font-size: 15px; font-weight: 700; color: #a2291d;
+    letter-spacing: .2px;
+  }
+  .bypass-sub {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    top: 50%; margin-top: 9px;
+    white-space: nowrap;
+    font-size: 13.5px; color: #6b3a34;
+  }
+
+  .ctx {
+    grid-column: 7; grid-row: 1 / span 3;
+    border-radius: 11px; padding: 18px 14px;
+    background: #eef3f8; border: 1.5px solid #a8c2da;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+  }
+  .ctx-name { font-size: 19px; font-weight: 700; color: #1f4d78; }
+  .ctx-note { font-size: 13.5px; line-height: 1.5; color: #46617a; margin-top: 7px; }
+
+  /* ---- after ---- */
+
+  .after { margin-top: 34px; }
+
+  .fixes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .fix {
+    border-radius: 11px; padding: 16px 19px;
+    background: #f4fbf6; border: 1.5px solid #2e8b57;
+  }
+  .fix-title { font-size: 17px; font-weight: 700; color: #1d6b40; margin-bottom: 6px; }
+  .fix-body { font-size: 15.5px; line-height: 1.55; color: #24513a; }
+  .fix-body code {
+    font-family: "Cascadia Mono", Consolas, Menlo, monospace; font-size: 14px;
+  }
+
+  .footnote {
+    margin-top: 24px; font-size: 14px; color: #5a7186; line-height: 1.55;
+  }
+  .footnote b { color: #12324f; }
+</style>
+</head>
+<body>
+
+  <div class="figure-title">What each path passed through</div>
+  <div class="figure-sub">
+    Both walls were scoped to document retrieval. A structured data read went through neither
+    &mdash; and it carried text a customer typed.
+  </div>
+
+  <div class="panel-tag tag-before">The gap</div>
+
+  <div class="band">
+
+    <!-- row 1 -->
+    <div class="src src-doc">
+      <div class="src-name">Uploaded customer document</div>
+      <div class="src-meta">provenance="customer-supplied"</div>
+    </div>
+    <div class="conn"></div>
+    <div class="wall wall-a">
+      <div class="wall-name">Structural fencing</div>
+      <div class="wall-note">every chunk, every index,<br>whatever its provenance</div>
+    </div>
+    <div class="conn"></div>
+    <div class="wall wall-b">
+      <div class="wall-name">Doc-action separation</div>
+      <div class="wall-note">retrieval latches the turn;<br>every write refused for the rest of it</div>
+    </div>
+    <div class="conn arrow"></div>
+    <div class="ctx">
+      <div class="ctx-name">Model context</div>
+      <div class="ctx-note">what the model reads,<br>and what it may act on</div>
+    </div>
+
+    <!-- row 2 -->
+    <div class="src src-first">
+      <div class="src-name">First-party wiki page</div>
+      <div class="src-meta">provenance="first-party"</div>
+    </div>
+    <div class="conn"></div>
+    <div class="conn"></div>
+    <div class="conn arrow"></div>
+
+    <!-- row 3 -->
+    <div class="src src-data">
+      <div class="src-name">Invoice record, from a data read</div>
+      <div class="src-meta">Notes &middot; PO reference &middot; dispute reason<br>&mdash; customer-typed, free text</div>
+    </div>
+    <div class="bypass">
+      <div class="bypass-label">No fence. No flag. No provenance attribute at all.</div>
+      <div class="bypass-sub">A query returns fields, and fields aren&rsquo;t documents.</div>
+    </div>
+
+  </div>
+
+  <div class="after">
+    <div class="panel-tag tag-after">What closed it</div>
+    <div class="fixes">
+      <div class="fix">
+        <div class="fix-title">Free-text fields are content</div>
+        <div class="fix-body">
+          A <code>Notes</code> line is fenced, scanned and latches the turn exactly as an uploaded
+          PDF does &mdash; and only when such a field actually comes back, so a purely numeric read
+          still leaves writes available.
+        </div>
+      </div>
+      <div class="fix">
+        <div class="fix-title">Arguments are references</div>
+        <div class="fix-body">
+          A write skill takes an identifier, never a value. Amounts and destinations resolve
+          server-side, so text planted in a memo cannot supply one.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    The second control makes some of the first one&rsquo;s blocking provably unnecessary, and the
+    blocking stayed. <b>Approve the first one</b> selects positionally and never touches the memo.
+    <b>Approve the invoice about the Q3 consulting</b> makes the memo the selector. From outside the
+    turn those two are indistinguishable, so one rule covers both, and the price is over-blocking the
+    harmless case.
+  </div>
+
+</body>
+</html>
