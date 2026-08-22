@@ -55,7 +55,7 @@ public static class DocActionSeparation
 
     /// <summary>
     /// Called wherever retrieval results come back — one path, so there is one
-    /// place to get this wrong. No branch on provenance: a first-party wiki page
+    /// place to get this wrong. No branch on origin: an internal wiki page
     /// latches the turn exactly as a customer upload does.
     /// </summary>
     public static void RecordRetrieval(TurnState state, IReadOnlyList<RetrievedChunk> chunks)
