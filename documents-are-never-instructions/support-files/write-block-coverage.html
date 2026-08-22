@@ -18,6 +18,10 @@
     cd local && npm init -y && npm i puppeteer && cd ..   # deps live in local/, never ship
     node local/render-figure.js write-block-coverage.html local/write-block-coverage.png
     magick local/write-block-coverage.png -quality 92 -define webp:method=6 ../write-block-coverage.webp
+    magick local/write-block-coverage.png -strip -define png:compression-level=9 ../write-block-coverage.png
+
+  Both formats ship: Medium rejects .webp on upload, so the .png is the one that
+  actually gets pasted into the post. The .webp is what the README and the draft embed.
 -->
 <html lang="en">
 <head>
