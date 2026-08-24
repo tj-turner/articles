@@ -6,7 +6,7 @@ document — has nothing to do with whether the model may act on it. This is the
 work of separating them, and what turned up when we went back to check whether
 the tests proving it were testing anything.
 
-**[Read the full article on Level Up Coding →](#)** *(link pending publish)*
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/documents-are-never-instructions-safety-walls-that-dont-ask-who-wrote-it-4159c14a5a62)**
 
 ## TL;DR
 

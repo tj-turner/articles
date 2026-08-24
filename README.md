@@ -7,6 +7,7 @@ software architecture, and the messy intersection of all three.
 
 | Article | Code | Published |
 |---|---|---|
+| [Documents Are Never Instructions: Safety Walls That Don't Ask Who Wrote It](https://levelup.gitconnected.com/documents-are-never-instructions-safety-walls-that-dont-ask-who-wrote-it-4159c14a5a62) | [`documents-are-never-instructions/`](documents-are-never-instructions/) | 2026-08 |
 | [Content-as-Code for AI: Prompts and Skills You'd Actually Review](https://levelup.gitconnected.com/content-as-code-for-ai-prompts-and-skills-youd-actually-review-6b67401d52c7) | [`content-as-code/`](content-as-code/) | 2026-08 |
 | [The Shared Foundation: Building an AI Library You'd Actually Reuse](https://levelup.gitconnected.com/the-shared-foundation-building-an-ai-library-youd-actually-reuse-4b156de92bd3) | [`shared-foundation/`](shared-foundation/) | 2026-08 |
 | [Building AI Infrastructure: Four Backend Assumptions to Rewire](https://levelup.gitconnected.com/building-ai-infrastructure-four-backend-assumptions-to-rewire-02115906c63b) | [`four-assumptions/`](four-assumptions/) | 2026-08 |
