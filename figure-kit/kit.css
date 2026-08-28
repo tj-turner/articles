@@ -302,13 +302,20 @@ body.narrow { width: 980px; }   /* for a second, smaller figure in the same piec
    Feed recognition: the generated headers are dark navy with a blue grid floor,
    chrome objects and an amber flare, which is a consistent motif and also the
    motif every other AI article on Medium is using. At thumbnail size one glowing
-   blob is every glowing blob. A light ground with real typography is the thing
-   nobody else in that feed is doing.
+   blob is every glowing blob. Real typography is the thing nobody else in that
+   feed has.
+
+   The ground stays dark, decided 2026-08-28 after looking at all three at
+   330px - which is the width Medium actually shows in a feed card. Dark keeps
+   the presence the published four already have against Medium's white page; a
+   light header risked reading as no image at all. A light variant was built and
+   rejected, so do not reintroduce one without that comparison.
 
    And it makes the article one object. The figures are light, warm and
-   editorial; the headers were dark science fiction. Same palette across both
-   means a reader who scrolls past the header meets the same visual language
-   again inside, which is what recognition actually is.
+   editorial; the headers were dark science fiction with nothing in common. The
+   card carries the figure palette onto the header, so a reader who scrolls past
+   it meets the same visual language again inside, which is what recognition
+   actually is.
 
    The right-hand slot holds a miniature of the article's own key figure. Every
    header is therefore unique, on-brand, and about the piece it sits on - and the
@@ -327,17 +334,18 @@ body.narrow { width: 980px; }   /* for a second, smaller figure in the same piec
   display: grid; grid-template-columns: 1fr 640px; gap: 60px; align-items: center;
   position: relative; overflow: hidden;
   background:
-    radial-gradient(900px 520px at 88% 4%, #e7f1fb 0%, rgba(231,241,251,0) 66%),
-    linear-gradient(158deg, #ffffff 0%, #f7fbfe 52%, #eef5fb 100%);
-  font-family: var(--sans); color: var(--ink);
+    radial-gradient(900px 560px at 84% 0%, rgba(63,142,208,.28) 0%, rgba(63,142,208,0) 64%),
+    radial-gradient(700px 420px at 6% 104%, rgba(192,138,30,.18) 0%, rgba(192,138,30,0) 62%),
+    linear-gradient(158deg, #16324d 0%, #0f2a44 46%, #0b1f34 100%);
+  font-family: var(--sans); color: #eaf2f9;
   -webkit-font-smoothing: antialiased;
 }
-/* faint grid floor - a nod to the generated headers it replaces */
+/* faint grid floor - the one thing carried over from the generated headers */
 .hdr::before {
-  content: ""; position: absolute; inset: 0; opacity: .5;
+  content: ""; position: absolute; inset: 0; opacity: .85;
   background-image:
-    linear-gradient(rgba(44,111,179,.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(44,111,179,.055) 1px, transparent 1px);
+    linear-gradient(rgba(120,180,235,.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,180,235,.09) 1px, transparent 1px);
   background-size: 62px 62px;
   mask-image: linear-gradient(150deg, rgba(0,0,0,.9), transparent 72%);
 }
@@ -346,19 +354,18 @@ body.narrow { width: 980px; }   /* for a second, smaller figure in the same piec
 .hdr-kicker {
   display: inline-flex; align-items: center; gap: 11px;
   font-family: var(--mono); font-size: 15px; font-weight: 700;
-  letter-spacing: 2.4px; text-transform: uppercase; color: var(--blue-d);
-  background: rgba(255,255,255,.8); border: 1.5px solid var(--blue-br);
+  letter-spacing: 2.4px; text-transform: uppercase; color: #a9d2f5;
+  background: rgba(255,255,255,.07); border: 1.5px solid rgba(140,190,235,.34);
   border-radius: 999px; padding: 9px 20px 9px 15px; margin-bottom: 26px;
-  box-shadow: 0 3px 12px -6px rgba(24,58,89,.45);
 }
 .hdr-kicker .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--amber);
                    box-shadow: 0 0 0 4px rgba(192,138,30,.18); }
 
-.hdr-title { font-size: 62px; font-weight: 800; line-height: 1.06; letter-spacing: -1.9px; color: var(--navy); }
-.hdr-title em { font-style: normal; color: var(--amber-t); }
+.hdr-title { font-size: 62px; font-weight: 800; line-height: 1.06; letter-spacing: -1.9px; color: #ffffff; }
+.hdr-title em { font-style: normal; color: #f0b846; }
 .hdr-rule { width: 96px; height: 6px; border-radius: 3px; margin: 26px 0 22px;
             background: linear-gradient(90deg, var(--navy), var(--blue) 55%, var(--amber)); }
-.hdr-sub { font-size: 21px; line-height: 1.5; color: var(--muted); max-width: 720px; }
+.hdr-sub { font-size: 21px; line-height: 1.5; color: #a8c1d6; max-width: 720px; }
 
 .hdr-by { display: flex; align-items: center; gap: 14px; margin-top: 40px; }
 .hdr-mark {
@@ -366,54 +373,26 @@ body.narrow { width: 980px; }   /* for a second, smaller figure in the same piec
   display: flex; align-items: center; justify-content: center;
   font-family: var(--mono); font-size: 17px; font-weight: 700; color: #fff;
   background: linear-gradient(165deg,#3f8ed0,var(--blue) 50%,var(--navy));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 8px 18px -9px rgba(20,70,120,.85);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 10px 24px -10px rgba(0,0,0,.9);
 }
-.hdr-byline { font-size: 16px; color: var(--muted); line-height: 1.4; }
-.hdr-byline b { display: block; font-size: 17.5px; color: var(--ink); }
+.hdr-byline { font-size: 16px; color: #90aac0; line-height: 1.4; }
+.hdr-byline b { display: block; font-size: 17.5px; color: #eaf2f9; }
 
 /* The article's own figure, shrunk and tilted into the corner. */
 .hdr-art { position: relative; height: 100%; display: flex; align-items: center; }
 .hdr-card {
   width: 100%; border-radius: 18px; padding: 30px 34px 34px;
   background: linear-gradient(180deg,#ffffff,#f4f9fd);
-  border: 1.5px solid #cfe0ef;
-  box-shadow: 0 3px 8px rgba(24,58,89,.06), 0 34px 60px -30px rgba(20,60,100,.75);
+  border: 1.5px solid rgba(255,255,255,.16);
+  box-shadow: 0 40px 70px -28px rgba(0,0,0,.85);
   transform: rotate(-1.6deg);
-  /* The card is a light surface whatever the ground is. Without this reset the
-     dark variant's text color cascades in and washes out every label on the
-     figure sitting inside it. */
+  /* The card is a light surface on a dark ground, so it has to reset the text
+     color explicitly. Without this the header's color cascades in and washes
+     out every label on the figure sitting inside it. */
   color: var(--ink);
 }
 .hdr-card .fig-title { font-size: 20px; margin-bottom: 3px; }
 .hdr-card .fig-sub   { font-size: 14px; margin-bottom: 16px; }
-
-/* Dark ground variant. Medium's page is white, so a near-white header can read
-   as no image at all in the feed. This keeps the same palette and the same
-   light figure card, and lets the card do the popping. */
-.hdr.dark {
-  background:
-    radial-gradient(900px 560px at 84% 0%, rgba(63,142,208,.28) 0%, rgba(63,142,208,0) 64%),
-    radial-gradient(700px 420px at 6% 104%, rgba(192,138,30,.18) 0%, rgba(192,138,30,0) 62%),
-    linear-gradient(158deg, #16324d 0%, #0f2a44 46%, #0b1f34 100%);
-  color: #eaf2f9;
-}
-.hdr.dark::before {
-  opacity: .85;
-  background-image:
-    linear-gradient(rgba(120,180,235,.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(120,180,235,.09) 1px, transparent 1px);
-}
-.hdr.dark .hdr-kicker {
-  color: #a9d2f5; background: rgba(255,255,255,.07);
-  border-color: rgba(140,190,235,.34); box-shadow: none;
-}
-.hdr.dark .hdr-title  { color: #ffffff; }
-.hdr.dark .hdr-title em { color: #f0b846; }
-.hdr.dark .hdr-sub    { color: #a8c1d6; }
-.hdr.dark .hdr-byline { color: #90aac0; }
-.hdr.dark .hdr-byline b { color: #eaf2f9; }
-.hdr.dark .hdr-mark   { box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 10px 24px -10px rgba(0,0,0,.9); }
-.hdr.dark .hdr-card   { border-color: rgba(255,255,255,.16); box-shadow: 0 40px 70px -28px rgba(0,0,0,.85); }
 
 /* full-bleed signature bar - the one element identical on every header */
 .hdr-foot {

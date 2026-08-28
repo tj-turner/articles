@@ -83,24 +83,32 @@ figure owns its own width and the viewport is only a bound.
 
 ## Headers
 
-[`header-template.html`](header-template.html) is a 2:1 authored header —
-prototype, pending a decision on whether the series moves to it.
+**Headers are authored now too.** [`header-template.html`](header-template.html)
+is the house style as of 2026-08-28: 2:1, dark ground, no image model.
 
-The generated headers do have a motif: dark navy, blue grid floor, chrome
-objects, an amber flare, no text. The trouble is that it is the same motif as
-every other AI article on Medium, and at feed-thumbnail size one glowing blob is
-every glowing blob. The template puts real typography there instead, keeps a
-constant series mark, and drops a **miniature of the article's own key figure**
-into the right-hand card — so each header is unique, about the piece it sits on,
-and free, because the figure already exists.
+The generated headers did have a motif — dark navy, blue grid floor, chrome, an
+amber flare, no text. The trouble is that it is the same motif as every other AI
+article on Medium, and at feed-thumbnail size one glowing blob is every glowing
+blob. The template puts real typography there instead, keeps a constant series
+mark, and drops a **miniature of the article's own key figure** into the
+right-hand card — so each header is unique, about the piece it sits on, and free,
+because the figure already exists.
 
-Add `.dark` to the `.hdr` element for the dark ground. Light is more distinctive
-in an AI feed; dark pops harder against Medium's white page. Both keep the same
-palette as the figures, which is the actual point — right now the headers are
-science fiction and the figures are editorial, and they don't look related.
+The ground is dark because all three candidates were compared at **330px**, which
+is what Medium shows in a feed card. Dark keeps the presence the published
+articles already have against Medium's white page. A light-ground variant was
+built and rejected — on a white page it read as no image at all. Don't
+reintroduce one without redoing that comparison.
+
+Four things never change, and they are the part that does the recognizing: the
+kicker pill, the monogram, the title treatment, and the four-color bar across the
+bottom. Everything else varies per article.
 
 No part number in the kicker. The cross-linking decision says every article reads
 standalone, and a "05" on the header breaks that before the first word.
+
+Change per article: `.hdr-title`, `.hdr-sub`, and the figure inside `.hdr-card`.
+Leave the rest alone.
 
 ## The rule that isn't negotiable
 
