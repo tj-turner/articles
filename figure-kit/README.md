@@ -110,6 +110,39 @@ standalone, and a "05" on the header breaks that before the first word.
 Change per article: `.hdr-title`, `.hdr-sub`, and the figure inside `.hdr-card`.
 Leave the rest alone.
 
+## Photographs
+
+Photographs are allowed as of 2026-08-28, with a test: **write the caption
+first.** If it says something the prose doesn't, the photo earned its place. If
+it restates the heading, it's decoration — cut it and quote six lines from
+`code-samples/` instead. Subject is the work (hands mid-edit, a whiteboard
+mid-argument, real code on a screen), never a team posed around a laptop. Full
+rules in `.claude/article-style.md` sec 13.
+
+A stock photo arrives with a stranger's color grading, which is how the article
+ends up in two visual languages — the same mistake the generated headers made.
+Duotone it onto the series navy:
+
+```powershell
+& $magick photo.jpg -resize 1600x -gravity center -crop 1600x600+0+0 +repage `
+  -colorspace Gray -auto-level `
+  "(" -size 1x256 "gradient:#0b1f34-#f2f7fb" ")" -clut `
+  -fill "#c08a1e" -colorize 6% -quality 86 photo-banner.jpg
+```
+
+`.jpg`, not `.webp` — Medium rejects `.webp` on upload, and photographs compress
+better as JPEG than PNG. The crop is a banner: wide and short breaks the page, a
+square eats a screen and reads as padding.
+
+**Duotone is for texture, not for people.** Hands, screens, whiteboards, cables,
+paper — yes. A photo whose whole point is a human face — no, it flattens skin
+tones into something cold and corporate, which throws away the reason the photo
+was worth including. Keep those in color and let the crop do the work.
+
+**Processing costs the automatic credit.** An unmodified photo pulled through
+Medium's built-in Unsplash search attributes itself. Crop or tone it and you are
+uploading by hand, so write the attribution into the caption by hand too.
+
 ## The rule that isn't negotiable
 
 **Never hand a text-carrying figure to an image generator.** Asked to make the
