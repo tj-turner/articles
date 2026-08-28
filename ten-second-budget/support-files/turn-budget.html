@@ -1,0 +1,63 @@
+<!doctype html>
+<!--
+  "What fits inside a turn the user is watching" — The Ten-Second Budget.
+
+  Budget bars rather than a flowchart: the claim is that one thing clears a
+  limit and another does not, which is one axis and a threshold. Drawn to scale
+  against the two-minute loop bound on purpose - that is what makes the chat
+  budget read as the sliver it is. A chart that gave the ten-second bar a
+  comfortable width would be arguing the opposite of the article.
+
+  The threshold runs through the bars instead of sitting in a legend beside
+  them, because the threshold is the argument.
+
+  Render, from support-files/:
+    node local/render-figure.js turn-budget.html local/turn-budget.png
+    magick local/turn-budget.png -quality 92 -define webp:method=6 ../turn-budget.webp
+    magick local/turn-budget.png -strip -define png:compression-level=9 ../turn-budget.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What fits inside a turn the user is watching</title>
+<link rel="stylesheet" href="../../figure-kit/kit.css">
+</head>
+<body>
+
+  <div class="fig-title">What fits inside a turn the user is watching</div>
+  <div class="fig-sub">
+    Drawn to scale against the two-minute loop bound, which is why the budget is a sliver.
+  </div>
+
+  <div class="bars">
+    <div class="bar-zone">
+      <div class="threshold" style="left: 8.3%">
+        <div class="threshold-label">10s — the budget</div>
+      </div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-name">A chat turn<span>SSE streaming, one user turn</span></div>
+      <div class="bar-track"><div class="bar-fill ok" style="width: 8.3%"></div></div>
+      <div class="bar-val">10s</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-name">Receivables aging report<span>five tool calls, one composition</span></div>
+      <div class="bar-track"><div class="bar-fill over" style="width: 37.5%"></div></div>
+      <div class="bar-val over">45s</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-name">Loop wall clock<span>where the loop is cut off, not a target</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div>
+      <div class="bar-val">120s</div>
+    </div>
+  </div>
+
+  <div class="fig-note">
+    <b>The report is four and a half budgets long.</b> Tuning gets a slow turn under
+    ten seconds. Nothing gets five sequential model round trips under ten seconds, which
+    is why this is a tier boundary rather than a performance backlog item.
+  </div>
+
+</body>
+</html>

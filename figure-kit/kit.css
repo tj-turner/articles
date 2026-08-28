@@ -229,6 +229,31 @@ body.narrow { width: 980px; }   /* for a second, smaller figure in the same piec
 .panel.against .panel-list li::before { content: "\2717"; color: var(--red); }
 .panel.for     .panel-list li::before { content: "\2713"; color: var(--green); }
 
+/* Two panels that are both correct. Against/for carry a verdict in their color,
+   which is wrong for a comparison where neither side is the mistake - drawing
+   one tier red says it should not exist. Cool and warm are the neutral pair. */
+.panel.cool { background: linear-gradient(180deg,#fbfdff,#eef5fc); border: 1.5px solid var(--blue-br); }
+.panel.cool::after   { background: linear-gradient(90deg,#3f83c4,var(--blue)); }
+.panel.cool .panel-title { color: var(--navy); }
+.panel.cool .panel-body  { color: #35597c; }
+.panel.cool .panel-list li::before { content: "\25B8"; color: var(--blue); }
+
+.panel.warm { background: linear-gradient(180deg,#fffdf6,var(--amber-l)); border: 1.5px solid var(--amber-br); }
+.panel.warm::after   { background: linear-gradient(90deg,#e0ab3c,var(--amber)); }
+.panel.warm .panel-title { color: var(--amber-t); }
+.panel.warm .panel-body  { color: #6b5a33; }
+.panel.warm .panel-list li::before { content: "\25B8"; color: var(--amber); }
+
+/* A term whose value is the point of the row. */
+.panel-list li b { color: inherit; }
+.panel-bound {
+  display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px;
+  font-family: var(--mono); font-size: 13px; color: var(--muted);
+}
+.panel-bound .num { font-family: var(--sans); font-size: 30px; font-weight: 700; letter-spacing: -.8px; }
+.panel.cool .panel-bound .num { color: var(--navy); }
+.panel.warm .panel-bound .num { color: var(--amber-t); }
+
 /* ============================ 6. ANNOTATED CODE ===========================
    A code card with callouts pinned to lines. Quotes a file that already
    exists in code-samples/ and stays compilable there. */

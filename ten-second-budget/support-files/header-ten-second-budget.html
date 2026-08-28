@@ -1,0 +1,87 @@
+<!doctype html>
+<!--
+  Header for The Ten-Second Budget. Copied from figure-kit/header-template.html;
+  only the title, the subtitle and the card figure differ from it.
+
+  Dark ground, chosen 2026-08-28 by comparing all three candidates at 330px, the
+  width Medium shows in a feed card. A light-ground variant was built and
+  rejected: it read as no image at all against Medium's white page.
+
+  Drawn here with Article 5's content. To reuse: copy into
+  <article>/support-files/header-<slug>.html, change the title, the subtitle and
+  the figure in the right-hand card, and leave everything else alone. The kicker,
+  the mark, the rule and the foot bar are the constant - they are the part that
+  does the recognising.
+
+  No part number in the kicker. The cross-linking decision says every article
+  reads standalone, and "05" on the header breaks that before the first word.
+
+  Render:
+    node local/render-figure.js header-template.html local/header.png
+    magick local/header.png -quality 92 -define webp:method=6 ../header-<slug>.webp
+    magick local/header.png -strip -define png:compression-level=9 ../header-<slug>.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Ten-Second Budget — header</title>
+<link rel="stylesheet" href="../../figure-kit/kit.css">
+<style> body { width: 1600px; padding: 0; background: #fff; } </style>
+</head>
+<body>
+
+<div class="hdr" id="canvas">
+
+  <div>
+    <div class="hdr-kicker"><span class="dot"></span>Building AI Infrastructure</div>
+
+    <div class="hdr-title">The Ten-Second Budget</div>
+    <div class="hdr-rule"></div>
+    <div class="hdr-sub">
+      Where long work goes when chat can't hold it — and why the split is about
+      failure models, not speed.
+    </div>
+
+    <div class="hdr-by">
+      <div class="hdr-mark">TT</div>
+      <div class="hdr-byline">
+        <b>Tim Turner</b>
+        .NET, Azure SQL, and AI tooling
+      </div>
+    </div>
+  </div>
+
+  <div class="hdr-art">
+    <div class="hdr-card">
+      <div class="fig-title">What fits inside a turn</div>
+      <div class="fig-sub">To scale against the two-minute loop bound.</div>
+
+      <div class="bars" style="padding-top: 48px">
+        <div class="bar-zone" style="left: 168px; right: 74px; top: 48px">
+          <div class="threshold" style="left: 8.3%"><div class="threshold-label">10s</div></div>
+        </div>
+
+        <div class="bar-row" style="grid-template-columns: 152px 1fr 58px; gap: 12px; margin-bottom: 10px">
+          <div class="bar-name" style="font-size: 13.5px">A chat turn</div>
+          <div class="bar-track" style="height: 26px"><div class="bar-fill ok" style="width: 8.3%"></div></div>
+          <div class="bar-val" style="font-size: 13.5px">10s</div>
+        </div>
+        <div class="bar-row" style="grid-template-columns: 152px 1fr 58px; gap: 12px; margin-bottom: 10px">
+          <div class="bar-name" style="font-size: 13.5px">One report</div>
+          <div class="bar-track" style="height: 26px"><div class="bar-fill over" style="width: 37.5%"></div></div>
+          <div class="bar-val over" style="font-size: 13.5px">45s</div>
+        </div>
+        <div class="bar-row" style="grid-template-columns: 152px 1fr 58px; gap: 12px; margin-bottom: 0">
+          <div class="bar-name" style="font-size: 13.5px">Wall clock</div>
+          <div class="bar-track" style="height: 26px"><div class="bar-fill" style="width: 100%"></div></div>
+          <div class="bar-val" style="font-size: 13.5px">120s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hdr-foot"></div>
+</div>
+
+</body>
+</html>

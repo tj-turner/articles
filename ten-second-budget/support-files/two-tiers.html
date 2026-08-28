@@ -1,0 +1,91 @@
+<!doctype html>
+<!--
+  "Two tiers, by how they fail" — The Ten-Second Budget.
+
+  A split panel, drawn in the neutral cool/warm pair rather than the red/green
+  against-for pair. Both tiers are correct; drawing one of them red would say it
+  should not exist, which is the opposite of the article's claim.
+
+  The panels are labelled by failure model, not by happy path. The happy paths
+  are nearly identical and are the boring half - what separates the tiers is who
+  asks for the retry, and whether anybody is watching when it arrives.
+
+  Render, from support-files/:
+    node local/render-figure.js two-tiers.html local/two-tiers.png
+    magick local/two-tiers.png -quality 92 -define webp:method=6 ../two-tiers.webp
+    magick local/two-tiers.png -strip -define png:compression-level=9 ../two-tiers.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Two tiers, by how they fail</title>
+<link rel="stylesheet" href="../../figure-kit/kit.css">
+</head>
+<body>
+
+  <div class="fig-title">Two tiers, by how they fail</div>
+  <div class="fig-sub">
+    The happy paths are nearly the same and are the boring half. What separates the tiers
+    is who asked for the retry.
+  </div>
+
+  <div class="split">
+
+    <div class="panel cool">
+      <div class="panel-head">
+        <span class="tag info" style="margin:0"><span class="dot"></span>Chat tier</span>
+      </div>
+      <div class="panel-bound"><span class="num">10s</span> bound the user can feel</div>
+      <div class="panel-title">A turn that dies is a retry someone asked for</div>
+      <ul class="panel-list">
+        <li>Streams tokens over SSE; somebody is watching it happen.</li>
+        <li>Failure is visible immediately, to the one person who cares.</li>
+        <li>The retry is a human decision, at a time of their choosing.</li>
+        <li>Costs five seconds and some irritation.</li>
+      </ul>
+    </div>
+
+    <div class="panel warm">
+      <div class="panel-head">
+        <span class="tag" style="margin:0; background:linear-gradient(180deg,#fffdf6,#fbf1da); color:#7a5a12; border:1px solid #e8d3a0"><span class="dot" style="background:#c08a1e; box-shadow:0 0 0 3px rgba(192,138,30,.18)"></span>Task tier</span>
+      </div>
+      <div class="panel-bound"><span class="num">2 min</span> wall clock, then cancel</div>
+      <div class="panel-title">A worker that dies is a redelivery nobody asked for</div>
+      <ul class="panel-list">
+        <li>Service Bus delivers at least once, on its own schedule.</li>
+        <li>The duplicate looks exactly like a first delivery.</li>
+        <li>Absorbed by <span class="pill amber">Pending &rarr; Running</span>, not by the worker.</li>
+        <li>Arrives against a row that may already be half-finished.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="divider"><span class="divider-text">The ordering that makes the result table answerable</span></div>
+
+  <div class="flow">
+    <div class="node amber">
+      <div class="node-name">Claim</div>
+      <div class="node-meta"><span class="pill amber">Pending &rarr; Running</span><br>Zero rows updated means another delivery won.</div>
+    </div>
+    <div class="arrow wide"><span class="arrow-label">only the winner continues</span></div>
+    <div class="node">
+      <div class="node-name">Write the result row</div>
+      <div class="node-meta">First. <span class="pill">TaskId</span> is the primary key, so a retry conflicts rather than duplicating.</div>
+    </div>
+    <div class="arrow wide"><span class="arrow-label">and only then</span></div>
+    <div class="node green">
+      <div class="node-name">Mark Succeeded</div>
+      <div class="node-meta">Last. So <span class="pill green">Succeeded</span> is never a promise a row is on its way.</div>
+    </div>
+  </div>
+
+  <div class="fig-note">
+    <b>Every failure path leaves the result table alone.</b> A composer that throws, a
+    wall clock that expires, a write that exhausts its retries — none of them writes a
+    partial row, so <b>Failed</b> and <b>TimedOut</b> tasks are exactly the ones with no
+    result, and "did this work" stays a single query.
+  </div>
+
+</body>
+</html>
