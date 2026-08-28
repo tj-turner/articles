@@ -1,0 +1,350 @@
+<!doctype html>
+<!--
+  Figure kit gallery — the seven archetypes, drawn with real content from the
+  Articles 5-8 outlines so they double as first drafts rather than lorem ipsum.
+
+  Six of the seven are things Mermaid cannot draw. That is the point. The
+  complaint was "one boring diagram in the middle", and a node-and-arrow graph
+  is the only shape Mermaid offers, so every figure in the series came out as
+  one whether the argument was shaped like that or not.
+
+  Numbers are sourced from the outlines and the TRs behind them. Where a figure
+  wants a number nobody has measured yet it says so on the figure. Nothing here
+  is invented to make a picture look finished.
+
+  Render:  node local/render-figure.js gallery.html local/gallery.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Figure kit — seven archetypes</title>
+<link rel="stylesheet" href="kit.css">
+<style>
+  /* Gallery chrome only. None of this belongs in kit.css. */
+  body { width: 1600px; background: #eef2f6; padding: 40px 50px 60px; }
+  .kit-head { max-width: 1100px; margin-bottom: 34px; }
+  .kit-head h1 { font-size: 34px; letter-spacing: -.6px; margin-bottom: 10px; }
+  .kit-head p { font-size: 17px; line-height: 1.6; color: var(--muted); }
+  .kit-item { margin-bottom: 46px; }
+  .kit-label {
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 14px;
+  }
+  .kit-n {
+    font-family: var(--mono); font-size: 13px; font-weight: 700; color: #fff;
+    background: var(--navy); border-radius: 7px; padding: 4px 10px;
+  }
+  .kit-name { font-size: 21px; font-weight: 700; letter-spacing: -.3px; }
+  .kit-when { font-size: 15px; color: var(--muted); }
+  .sheet { border-radius: 16px; box-shadow: 0 18px 44px -22px rgba(20,50,80,.55); }
+</style>
+</head>
+<body>
+
+<div class="kit-head">
+  <h1>Seven ways to break a page that aren't a flowchart</h1>
+  <p>
+    Every figure in the series so far is a node-and-arrow diagram, because that is
+    the only shape Mermaid draws. Six of the seven below are shapes it cannot.
+    Each one is markup against a shared stylesheet, so the second figure in an
+    article costs about fifteen lines instead of another afternoon.
+  </p>
+</div>
+
+<!-- ================================================================= 1 -->
+<div class="kit-item">
+  <div class="kit-label">
+    <span class="kit-n">01</span>
+    <span class="kit-name">Stat band</span>
+    <span class="kit-when">When a section has magnitudes but no code to quote. The cheapest break on the ladder.</span>
+  </div>
+
+  <div class="sheet">
+    <div class="fig-title">The shape of the problem, in four numbers</div>
+    <div class="fig-sub">Article 5. Two tiers, and the gap between what a turn can afford and what a report costs.</div>
+
+    <div class="stats">
+      <div class="stat ok">
+        <div class="stat-num">10<small>s</small></div>
+        <div class="stat-label">What a chat turn can afford</div>
+        <div class="stat-sub">Not a performance target. Past this the surface is lying about being a conversation.</div>
+      </div>
+      <div class="stat hot">
+        <div class="stat-num">45<small>s</small></div>
+        <div class="stat-label">One receivables aging report</div>
+        <div class="stat-sub">Five tool calls and a composition, with the user watching a cursor blink.</div>
+      </div>
+      <div class="stat warm">
+        <div class="stat-num">2<small> min</small></div>
+        <div class="stat-label">Loop wall clock</div>
+        <div class="stat-sub">A bound on the loop, not a budget to spend. Nothing should approach it.</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">0</div>
+        <div class="stat-label">New dispatch paths</div>
+        <div class="stat-sub">Kickoff is a skill call like any other, so the write block still covers it unchanged.</div>
+      </div>
+    </div>
+
+    <div class="fig-note">
+      <b>Fifteen lines of markup.</b> This is the figure to reach for when the pre-flight
+      flags a dry stretch and the section genuinely has no sample to quote.
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================= 2 -->
+<div class="kit-item">
+  <div class="kit-label">
+    <span class="kit-n">02</span>
+    <span class="kit-name">Budget bars</span>
+    <span class="kit-when">One axis, one threshold, and things that clear it or don't. Latency, cost, size.</span>
+  </div>
+
+  <div class="sheet">
+    <div class="fig-title">What fits inside a turn the user is watching</div>
+    <div class="fig-sub">Article 5. Drawn to scale against the two-minute loop bound, which is why the budget is a sliver.</div>
+
+    <div class="bars">
+      <div class="bar-zone">
+        <div class="threshold" style="left: 8.3%">
+          <div class="threshold-label">10s — the budget</div>
+        </div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-name">A chat turn<span>SSE streaming, one user turn</span></div>
+        <div class="bar-track"><div class="bar-fill ok" style="width: 8.3%"></div></div>
+        <div class="bar-val">10s</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-name">Receivables aging report<span>five tool calls, one composition</span></div>
+        <div class="bar-track"><div class="bar-fill over" style="width: 37.5%"></div></div>
+        <div class="bar-val over">45s</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-name">Loop wall clock<span>the hard stop, not a target</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div>
+        <div class="bar-val">120s</div>
+      </div>
+    </div>
+
+    <div class="fig-note">
+      <b>The threshold is the argument</b>, so it is drawn through the bars rather than
+      sitting in a legend beside them. A reader who looks at nothing else sees that the
+      report is four and a half budgets long.
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================= 3 -->
+<div class="kit-item">
+  <div class="kit-label">
+    <span class="kit-n">03</span>
+    <span class="kit-name">Window strip</span>
+    <span class="kit-when">Any claim of the form "this is true for a bounded interval". Staleness, retry, exposure.</span>
+  </div>
+
+  <div class="sheet">
+    <div class="fig-title">The overrun the design buys on purpose</div>
+    <div class="fig-sub">Article 6. A tenant can spend past its cap for as long as the aggregate is stale — and that is the cheaper mistake.</div>
+
+    <div class="strip">
+      <div class="strip-window" style="left: 22%; right: 34%">
+        <div class="strip-window-label">≤ 30s of possible overrun</div>
+      </div>
+      <div class="strip-mark" style="left: 22%" data-label="cap read — p95 ≤ 100ms"></div>
+      <div class="strip-mark" style="left: 66%" data-label="digest lands, aggregate current"></div>
+    </div>
+    <div class="strip-axis">
+      <span>t0 — turn starts</span>
+      <span>billable events queued, not awaited</span>
+      <span>t + 30s</span>
+    </div>
+
+    <div class="fig-note">
+      <b>Mermaid has no notion of an interval.</b> It would draw this as a sequence of
+      arrows, which turns a window into a set of steps and loses the only thing the
+      figure is claiming.
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================= 4 -->
+<div class="kit-item">
+  <div class="kit-label">
+    <span class="kit-n">04</span>
+    <span class="kit-name">Coverage matrix</span>
+    <span class="kit-when">Rows by columns with a state per cell. Twelve published articles contain two tables between them.</span>
+  </div>
+
+  <div class="sheet">
+    <div class="fig-title">Four gates, four different cadences</div>
+    <div class="fig-sub">Article 8. Which is exactly the shape a table beats prose at, and the prose has been doing it alone.</div>
+
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>Gate</th><th>Runs on</th><th>Blocks merge</th><th>Needs a person</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Golden prompt suite<small>versioned with the prompt it exercises</small></td>
+          <td>Every AI-repo PR</td>
+          <td><span class="cell yes">on regression</span></td>
+          <td><span class="cell na">no</span></td>
+        </tr>
+        <tr>
+          <td>Tool-call correctness<small>right words, wrong skill</small></td>
+          <td>Every AI-repo PR</td>
+          <td><span class="cell yes">yes</span></td>
+          <td><span class="cell na">no</span></td>
+        </tr>
+        <tr>
+          <td>Adversarial harness<small>severity-tiered</small></td>
+          <td>Safety-critical paths</td>
+          <td><span class="cell part">tiered</span></td>
+          <td><span class="cell na">no</span></td>
+        </tr>
+        <tr>
+          <td>Required reviewer group<small>prompts, classification, write skills, retry policy</small></td>
+          <td>Those four paths only</td>
+          <td><span class="cell yes">yes</span></td>
+          <td><span class="cell part">always</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="fig-note">
+      <b>A review requirement everyone hits is a review requirement nobody reads.</b>
+      The narrow scope in the last row is the finding, and the table is what makes it
+      visible in one glance.
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================= 5 -->
+<div class="kit-item">
+  <div class="kit-label">
+    <span class="kit-n">05</span>
+    <span class="kit-name">Split panel</span>
+    <span class="kit-when">The obvious design against the shipped one. Every article in this series makes this move at least once.</span>
+  </div>
+
+  <div class="sheet">
+    <div class="fig-title">Two ways to count tokens</div>
+    <div class="fig-sub">Article 6. The first one is what everybody writes first, and it puts a database write on the request path.</div>
+
+    <div class="split">
+      <div class="panel against">
+        <div class="panel-head">
+          <span class="tag bad" style="margin:0"><span class="dot"></span>Synchronous</span>
+        </div>
+        <div class="panel-title">Write the usage row before returning</div>
+        <ul class="panel-list">
+          <li>Every provider call now owns a database round trip the user waits on.</li>
+          <li>p99 inherits the worst of two systems instead of one.</li>
+          <li>Contention on the hottest table in the system, written by every service.</li>
+          <li>A billing outage becomes a chat outage.</li>
+        </ul>
+      </div>
+      <div class="panel for">
+        <div class="panel-head">
+          <span class="tag good" style="margin:0"><span class="dot"></span>Bounded staleness</span>
+        </div>
+        <div class="panel-title">Publish the event, read an aggregate</div>
+        <ul class="panel-list">
+          <li>Cap-check reads a digest once per turn, p95 ≤ 100ms.</li>
+          <li>Billable events fire and forget onto a queue.</li>
+          <li>One digester writes the audit table. Application code never touches it.</li>
+          <li>Cost: up to 30s of overrun, named on the tin.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================= 6 -->
+<div class="kit-item">
+  <div class="kit-label">
+    <span class="kit-n">06</span>
+    <span class="kit-name">Annotated code</span>
+    <span class="kit-when">When the argument lives in three specific lines. Quotes a file that already exists in code-samples/.</span>
+  </div>
+
+  <div class="sheet">
+    <div class="fig-title">Where the redelivery gets absorbed</div>
+    <div class="fig-sub">Article 5. Service Bus will hand the same message over twice, so the transition is the dedup.</div>
+
+    <div class="code-card">
+      <div class="code-head">
+        <span>usp_Task_TryClaim.sql</span>
+        <span class="where">illustrative — the shipped version lives in code-samples/</span>
+      </div>
+      <div class="code-body">
+<div class="ln"><span><span class="k">UPDATE</span> dbo.Tasks</span></div>
+<div class="ln"><span>   <span class="k">SET</span> Status = <span class="s">'Running'</span>,</span></div>
+<div class="ln"><span>       ClaimedUtc = SYSUTCDATETIME()</span></div>
+<div class="ln hi-ok"><span> <span class="k">WHERE</span> TaskId = @TaskId</span><span class="callout ok">the gate, not the worker</span></div>
+<div class="ln hi-ok"><span>   <span class="k">AND</span> Status = <span class="s">'Pending'</span>;</span><span class="callout ok">second delivery matches nothing</span></div>
+<div class="ln"><span></span></div>
+<div class="ln"><span><span class="c">-- @@ROWCOUNT is the whole answer: 1 means this delivery</span></span></div>
+<div class="ln"><span><span class="c">-- won the claim, 0 means another one already did.</span></span></div>
+<div class="ln hi"><span><span class="k">SET</span> @Claimed = <span class="k">CASE</span> @@ROWCOUNT <span class="k">WHEN</span> <span class="t">1</span> <span class="k">THEN</span> <span class="t">1</span> <span class="k">ELSE</span> <span class="t">0</span> <span class="k">END</span>;</span><span class="callout">no THROW — output param</span></div>
+      </div>
+    </div>
+
+    <div class="fig-note">
+      <b>This is the highest-signal break available</b> and the work is already done. Moving
+      samples out to <span class="pill">code-samples/</span> is what cost the series its
+      cadence; the fix is to quote six to ten lines back in.
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================= 7 -->
+<div class="kit-item">
+  <div class="kit-label">
+    <span class="kit-n">07</span>
+    <span class="kit-name">Flow band</span>
+    <span class="kit-when">The one shape Mermaid does. Kept in the kit so a flow arrives in the same visual key as the rest.</span>
+  </div>
+
+  <div class="sheet">
+    <div class="fig-title">The billing path, and the path it deliberately misses</div>
+    <div class="fig-sub">Article 6. The absence is the argument, so the request path has to be visible as the thing not touched.</div>
+
+    <div class="flow">
+      <div class="node amber">
+        <div class="node-name">Provider call</div>
+        <div class="node-meta">Any service, any tier. Publishes and moves on.</div>
+      </div>
+      <div class="arrow wide"><span class="arrow-label">fire, don't await</span></div>
+      <div class="node">
+        <div class="node-name">Billing events queue</div>
+        <div class="node-meta">Nothing downstream is on the request path.</div>
+      </div>
+      <div class="arrow"></div>
+      <div class="node solid">
+        <div class="node-name">Digester</div>
+        <div class="node-meta">The single writer. One Function, one job.</div>
+      </div>
+      <div class="arrow"></div>
+      <div class="node green">
+        <div class="node-name">Billing audit table</div>
+        <div class="node-meta">Written through the central API service only.</div>
+      </div>
+    </div>
+
+    <div class="flow" style="margin-top: 20px">
+      <div class="node absent" style="flex: 0 0 100%">
+        <div class="node-name">The user's turn — untouched by any of the above</div>
+        <div class="node-meta">Drawn dashed and grey because what this figure claims is an absence, and an
+          absence that isn't on the page reads as an omission.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

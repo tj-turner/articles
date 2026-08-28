@@ -20,6 +20,13 @@ software architecture, and the messy intersection of all three.
 | [Dapper + LLMs: Generating Stored Procedures You'd Actually Ship](https://medium.com/@tnjturner/dapper-llms-generating-stored-procedures-youd-actually-ship-e0f557a885e1) | [`dapper-plus-llms/`](dapper-plus-llms/) | 2026-04 |
 | [Why Humans Must Stay in the Loop: Lessons from Building an AI-Powered Coloring Book](https://medium.com/@tnjturner/why-humans-must-stay-in-the-loop-lessons-from-building-an-ai-powered-coloring-book-005d5996d346) | — | 2026-04 |
 
+## Figures
+
+Diagrams in these articles are authored, never generated.
+[`figure-kit/`](figure-kit/) holds the shared stylesheet they are built against
+and a gallery of the seven forms — stat bands, budget bars, window strips,
+coverage matrices, split panels, annotated code and flows.
+
 ## About
 
 Written by **Tim Turner** — .NET, Azure SQL, and AI tooling. Most of these
