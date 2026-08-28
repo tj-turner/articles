@@ -81,6 +81,27 @@ dependency tree never ships.
 The renderer screenshots `#canvas` if it finds one and `body` otherwise, so the
 figure owns its own width and the viewport is only a bound.
 
+## Headers
+
+[`header-template.html`](header-template.html) is a 2:1 authored header —
+prototype, pending a decision on whether the series moves to it.
+
+The generated headers do have a motif: dark navy, blue grid floor, chrome
+objects, an amber flare, no text. The trouble is that it is the same motif as
+every other AI article on Medium, and at feed-thumbnail size one glowing blob is
+every glowing blob. The template puts real typography there instead, keeps a
+constant series mark, and drops a **miniature of the article's own key figure**
+into the right-hand card — so each header is unique, about the piece it sits on,
+and free, because the figure already exists.
+
+Add `.dark` to the `.hdr` element for the dark ground. Light is more distinctive
+in an AI feed; dark pops harder against Medium's white page. Both keep the same
+palette as the figures, which is the actual point — right now the headers are
+science fiction and the figures are editorial, and they don't look related.
+
+No part number in the kicker. The cross-linking decision says every article reads
+standalone, and a "05" on the header breaks that before the first word.
+
 ## The rule that isn't negotiable
 
 **Never hand a text-carrying figure to an image generator.** Asked to make the
