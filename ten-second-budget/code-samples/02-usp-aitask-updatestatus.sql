@@ -28,10 +28,29 @@ BEGIN
     SET NOCOUNT ON;
     SET @Transitioned = 0;
 
+    -- The guard above answers "is the row in the state I expected." It does not
+    -- answer "is that a legal move," and without this table it isn't one: a
+    -- caller can resurrect a terminal task with Succeeded -> Pending, skip
+    -- Running entirely, or write a misspelled status that no @FromStatus will
+    -- ever match again, stranding the row forever.
+    --
+    -- Still no THROW. An illegal transition returns @Transitioned = 0, which is
+    -- the same answer a losing race gets, because both mean "the row did not
+    -- move and you are not the one who moves it."
+    IF NOT EXISTS (SELECT 1 FROM (VALUES
+            ('Pending','Running'), ('Pending','TimedOut'),
+            ('Running','Succeeded'), ('Running','Failed'), ('Running','TimedOut')
+        ) AS legal(f, t) WHERE f = @FromStatus AND t = @ToStatus)
+    BEGIN
+        RETURN;
+    END
+
     UPDATE dbo.AiTasks
        SET Status        = @ToStatus,
            WorkerId      = COALESCE(@WorkerId, WorkerId),
-           FailureReason = @FailureReason,
+           -- COALESCE, matching WorkerId above: a later transition that passes
+           -- no reason must not erase the reason an earlier one recorded.
+           FailureReason = COALESCE(@FailureReason, FailureReason),
            ClaimedUtc    = CASE WHEN @ToStatus = 'Running'
                                 THEN SYSUTCDATETIME() ELSE ClaimedUtc END,
            CompletedUtc  = CASE WHEN @ToStatus IN ('Succeeded', 'Failed', 'TimedOut')

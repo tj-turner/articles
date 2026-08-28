@@ -36,10 +36,17 @@ nobody asked for — and this is the set of invariants that survive it.
   written first and the status is marked `Succeeded` second, so `Succeeded` is
   never a promise a row is on its way. Every failure path leaves the result table
   alone, which keeps "did this work" a single query.
-- **The uncomfortable half of that invariant.** A transient failure on the result
-  write is retried, and if the retries are exhausted the task is marked `Failed`
-  and a completed report is thrown away rather than written somewhere the
-  invariant does not cover.
+- **That invariant is a convention, not a database guarantee.** Two tables in two
+  transactions means the ordering holds it up, plus two rules: a `TaskId` PK
+  conflict is treated as already-written rather than as an error, and nothing
+  after a successful result write may terminalize the task as `Failed`. If both
+  tables live in one database, a single procedure holding both writes is
+  strictly better than the ordering discipline.
+- **The uncomfortable half.** A transient failure on the result write is retried,
+  and when the retries are exhausted a completed report is thrown away rather
+  than written somewhere the invariant does not cover. The row stays `Running` —
+  a database too sick to take the result write will not record a clean `Failed`
+  either.
 - **The envelope carries a version because the rows outlive the renderer.** A
   result row is written once and read for as long as the conversation exists, so
   the table is a permanent record of every payload shape ever emitted. Versioning
@@ -68,6 +75,13 @@ redelivery finds nothing to claim, because `Running` is not `Pending`. The guard
 that makes duplicate deliveries cheap is the same guard that makes an abandoned
 row unreachable. Recovering those rows is a separate mechanism and is not shown
 in these samples.
+
+That mechanism is load-bearing for the headline invariant, which is why leaving
+it out is a real gap rather than a tidy scope boundary. `succeeded → row exists`
+is guaranteed by the write ordering. `row exists → succeeded` is not: a worker
+can die between the two writes, and a sweeper that settles abandoned `Running`
+rows to `Failed` without first checking for a result row creates precisely the
+state the invariant forbids. The sweeper has to look before it decides.
 
 ## License
 
