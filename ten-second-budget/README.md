@@ -22,10 +22,13 @@ nobody asked for — and this is the set of invariants that survive it.
   surface has — the write block, argument locking, impact levels, the proposal
   path — is attached to skill dispatch. A separate pipeline is a second place all
   of it has to exist and a second place it drifts.
-- **The classifier was the worse half of that idea.** Deciding up front whether a
-  question is expensive means predicting tool-call depth before any tool is
-  called. It is also wrong in the direction that hurts: the misprediction you
-  notice is a cheap question sent to a worker; the one you don't is the expensive
+- **The classifier was the worse half of that idea, and we had met it before.**
+  The same shape sits in the ingestion path, deciding which uploaded documents
+  need scanning, and a wrong guess there produced no error, no failed job and no
+  alert — customer documents simply went unscanned. Deciding up front whether a
+  chat request is expensive means predicting tool-call depth before any tool is
+  called, and it fails in the direction that hurts: the misprediction you notice
+  is a cheap question sent to a worker; the one you don't is the expensive
   question kept in the turn.
 - **The transition is the deduplication.** `@FromStatus` sits in the `WHERE`
   clause, so a status change either matches the row's current state or changes
