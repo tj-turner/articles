@@ -37,8 +37,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SharedAi.Contracts.Tasks;
 
-namespace Platform.Ai.Skills.Tasks;
+namespace SharedAi.Skills.Tasks;
 
 public sealed record StartStructuredReportArgs(
     string UserQuery,

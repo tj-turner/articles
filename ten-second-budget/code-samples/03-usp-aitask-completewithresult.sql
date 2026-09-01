@@ -67,6 +67,11 @@ BEGIN
             ROLLBACK TRAN;
         END
 
-    SELECT @CurrentStatus = Status FROM dbo.AiTasks WHERE TaskId = @TaskId;
+    -- A scalar subquery, not SELECT @var = col. With no matching row the
+    -- assignment form leaves the variable holding whatever the caller passed in,
+    -- and since this is an OUTPUT parameter that is usually the value from the
+    -- previous call - so a missing task would report the last task's status.
+    -- That is exactly the case this parameter was added to disambiguate.
+    SET @CurrentStatus = (SELECT Status FROM dbo.AiTasks WHERE TaskId = @TaskId);
 END
 GO

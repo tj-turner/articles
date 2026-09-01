@@ -60,8 +60,12 @@ BEGIN
            FailureReason = COALESCE(@FailureReason, FailureReason),
            ClaimedUtc    = CASE WHEN @ToStatus = 'Running'
                                 THEN SYSUTCDATETIME() ELSE ClaimedUtc END,
-           CompletedUtc  = CASE WHEN @ToStatus IN ('Succeeded', 'Failed', 'TimedOut')
-                                THEN SYSUTCDATETIME() ELSE NULL END,
+           -- ELSE CompletedUtc, not ELSE NULL, for the same reason as the two
+           -- lines above. 'Succeeded' is deliberately absent from the list: it
+           -- is the one status this procedure cannot reach, so naming it here
+           -- would be dead code arguing against the file's own point.
+           CompletedUtc  = CASE WHEN @ToStatus IN ('Failed', 'TimedOut')
+                                THEN SYSUTCDATETIME() ELSE CompletedUtc END,
            RowVersionUtc = SYSUTCDATETIME()
      WHERE TaskId = @TaskId
        AND Status = @FromStatus;

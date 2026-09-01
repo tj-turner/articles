@@ -88,8 +88,8 @@
   <div class="fig-note">
     <b>Every failure path leaves the result table alone.</b> A composer that throws, a
     wall clock that expires, a transaction that exhausts its retries — none of them
-    leaves a partial row, so <b>Failed</b> and <b>TimedOut</b> tasks are exactly the ones
-    with no result, and "did this work" stays a single query.
+    leaves a partial row, so no task that failed or timed out has one,
+    and "did this work" stays a single query against the result table.
   </div>
 
 </body>

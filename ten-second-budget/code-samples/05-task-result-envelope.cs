@@ -18,8 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
-namespace Platform.Ai.Contracts.Tasks;
+namespace SharedAi.Contracts.Tasks;
 
 public sealed record TaskResultEnvelope<TPayload>(
     string Kind,
@@ -29,7 +30,7 @@ public sealed record TaskResultEnvelope<TPayload>(
 public sealed record StructuredReportPayload(
     string ReportTitle,
     IReadOnlyList<ReportColumn> Columns,
-    // Keyed by column name rather than positional. Positional rows are the
+    // Keyed by ReportColumn.Name rather than positional. Positional rows are the
     // shape most hostile to exactly the additive change the version field
     // exists to survive - insert a column and every row silently shifts.
     IReadOnlyList<IReadOnlyDictionary<string, string?>> Rows,
@@ -47,10 +48,29 @@ public sealed record StructuredReportPayload(
     Classification ClassificationCeiling,
     IReadOnlyList<string> DataSources);
 
-public sealed record ReportColumn(string Header, ColumnAlignment Alignment, string? Format);
+// Name is the key the rows are dictionaried by; Header is what gets drawn. They
+// start out identical and the reason to separate them is that Header is the one
+// that gets reworded, localized, or duplicated across two columns - and if the
+// rows are keyed by a display string, renaming a heading silently empties a
+// column in every stored report.
+public sealed record ReportColumn(
+    string Name, string Header, ColumnAlignment Alignment, string? Format);
 
 public enum ColumnAlignment { Left, Right }
 
+// Stored by name, compared by value, and those are two different arguments.
+//
+// Comparison wants an ordered enum: effective classification is the higher of
+// floor and ceiling, and max() over text gets that wrong (see above).
+//
+// Storage wants the name, because the numbers are not stable across the system.
+// This enum grew Confidential and Secret after the version that shipped with
+// { Public, Internal, Restricted }, which moved Restricted from 2 to 3. Any
+// payload serialized numerically under the old set now reads back one level
+// lower - silently, and in the declassifying direction. The envelope's Version
+// field cannot catch it, because inserting an enum member is not a payload
+// shape change and nothing bumps.
+[JsonConverter(typeof(JsonStringEnumConverter<Classification>))]
 public enum Classification
 {
     Public = 0,

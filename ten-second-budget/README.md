@@ -42,8 +42,8 @@ nobody asked for — and this is the set of invariants that survive it.
   `Pending → Running` against a row already `Running`, gets zero back, and
   returns. Losing that race is not an error and does not `THROW`.
 - **A result row exists if and only if the task succeeded.** Every failure path
-  leaves the result table alone, so `Failed` and `TimedOut` tasks are exactly the
-  ones with no result and "did this work" stays a single query.
+  leaves the result table alone, so no task that failed or timed out has a result,
+  and "did this work" stays a single query against the result table.
 - **Ordering only reaches one direction; a transaction reaches both.** The first
   version wrote the result and then transitioned, which makes `Succeeded` the
   last thing that happens and cannot say anything about a worker dying in the
@@ -56,25 +56,29 @@ nobody asked for — and this is the set of invariants that survive it.
   a duplicate.
 - **`Running → Succeeded` is not in the transition procedure's legal list.** The
   only path to `Succeeded` is the procedure that writes the result alongside it,
-  which is what turns the invariant from a rule a worker follows into a shape the
-  schema will not let you express. What it costs is that one transaction means
-  one database.
+  which is what turns the invariant from a rule a worker follows into a shape no
+  procedure will write. The procedure set holds it up, not a constraint, and only
+  while the app principal has `EXECUTE` on the two procedures and no direct
+  `UPDATE` on the table. What it costs is that one transaction means one
+  database.
 - **Provider retries live inside the wall clock, not beside it.** A 429 carrying
   a twenty-second `Retry-After` spends twenty seconds of the two minutes. The
-  composer is handed a linked token that is already counting down, so nothing
-  downstream has to cooperate for the bound to hold — and the host's function
-  timeout has to sit strictly above the budget, or there is no room left to
-  record `TimedOut`.
+  composer is handed a clock that is already counting down, so it cannot extend
+  the budget by starting its own — though a linked token is cooperative, so the
+  worker rechecks it after composing rather than trusting the composer to have
+  looked. The host's function timeout has to sit strictly above the budget, or
+  there is no room left to record `TimedOut`.
 - **The uncomfortable half.** A transient failure on the completing transaction
   is retried, and when the retries are exhausted a completed report is thrown
   away rather than written somewhere the invariant does not cover. The row stays
   `Running` — a database too sick to take that commit will not record a clean
   `Failed` either.
-- **The card polls the task row; nothing is pushed to it.** A push would be a
-  second way for the answer to arrive, carrying its own delivery problem — the
-  client that was disconnected at the moment it fired. The row is already the
-  source of truth, so the card asks the row. Same argument as kickoff being a
-  skill, applied at the other end.
+- **The card polls the task row.** Not because push is wrong — the usual pattern
+  pushes an *invalidation* ("task 0192… changed, go read it") and leaves the row
+  as the source of truth, which is a good design. Polling wins here on cost: no
+  fanout infrastructure, no reconnect path, and at UAT volumes the load is
+  nothing. It is worth naming what that trades, though: the poll lands on the
+  same database the completing transaction has to be healthy enough to accept.
 - **The model never carries the report forward.** The conversation keeps the task
   id; the payload is rendered to the user and nothing else. A user asking to see
   it again is a `get-task-result` skill call, so re-reading a finished report
@@ -87,7 +91,7 @@ nobody asked for — and this is the set of invariants that survive it.
 - **The envelope carries a version because the rows outlive the renderer.** A
   result row is written once and read for as long as the conversation exists, so
   the table is a permanent record of every payload shape ever emitted. Versioning
-  costs a string; migrating a few million JSON payloads costs a weekend.
+  costs a field; not versioning costs a table you cannot rewrite in an afternoon.
 
 ## Files
 

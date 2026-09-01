@@ -14,10 +14,15 @@
 // whole class of problem, at the cost of requiring both tables to share a
 // database.
 //
-// The budget is a linked token, not a timer the composer is asked to respect.
-// Nothing downstream has to cooperate for it to hold, which is the same reason
-// the write block in the chat tier sits in front of dispatch instead of in the
-// prompt.
+// Be careful about what the budget is worth. A linked token is cooperative by
+// definition: a composer that never checks it runs as long as it likes, and the
+// completion below would then write a result for work that overran the bound.
+// What the token does buy is that the composer cannot EXTEND the budget - it is
+// handed a clock that is already counting down rather than asked to start one.
+// The recheck after ComposeAsync is what turns an overrun into a TimedOut
+// instead of a late success, and it is the difference between this and the
+// write block in the chat tier, which sits in front of dispatch and cannot be
+// declined at all.
 //
 // Known limit: a worker that dies after claiming leaves the task in Running,
 // and the redelivery finds nothing to claim, because Running is not Pending.
@@ -28,9 +33,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using Platform.Ai.Contracts.Tasks;
+using SharedAi.Contracts.Tasks;
 
-namespace Platform.Ai.Workers;
+namespace SharedAi.Workers;
 
 public sealed class StructuredReportWorker(
     ITaskStateStore tasks,
@@ -73,6 +78,11 @@ public sealed class StructuredReportWorker(
         {
             var payload = await composer.ComposeAsync(kickoff, budget.Token);
 
+            // A composer that never checked the token can return here having
+            // overrun the budget. Without this line the overrun lands as a
+            // Succeeded task, which is a quieter lie than a TimedOut one.
+            budget.Token.ThrowIfCancellationRequested();
+
             // CancellationToken.None on purpose. This call is what makes the
             // invariant true and it may not be abandoned partway because the
             // host started draining.
@@ -88,19 +98,37 @@ public sealed class StructuredReportWorker(
             {
                 // The row was not Running by the time the report was finished.
                 // The transaction rolled back, so there is nothing to clean up -
-                // but the status it came back with is worth reading. Failed or
-                // TimedOut means a sweep settled a task this worker was still
-                // working on, and the budget is not doing its job.
-                log.LogWarning(
-                    "Task {TaskId} was {Status} at completion; result discarded.",
-                    kickoff.TaskId, completion.CurrentStatus);
+                // but the two reasons want different log levels. Succeeded means
+                // a previous attempt of this same call committed and the reply
+                // never got back to us, which is the case the guarded INSERT in
+                // the procedure exists to make boring. Anything else means a
+                // sweep settled a task this worker was still working on, and the
+                // margin between the budget and the sweep is wrong.
+                if (completion.CurrentStatus is AiTaskStatus.Succeeded)
+                {
+                    log.LogInformation(
+                        "Task {TaskId} was already complete; this delivery's result was discarded.",
+                        kickoff.TaskId);
+                }
+                else
+                {
+                    log.LogWarning(
+                        "Task {TaskId} was {Status} at completion; finished report discarded.",
+                        kickoff.TaskId, completion.CurrentStatus);
+                }
             }
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            // Host drain. Let it escape so Service Bus abandons the message and
-            // redelivers it - swallowing this completes the message and destroys
-            // the work. The task is left Running for the recovery sweep.
+            // Host drain. Let it escape rather than record a terminal status we
+            // cannot stand behind - the work is genuinely in an unknown state.
+            //
+            // Be honest about what that buys, because it is less than it looks.
+            // Service Bus abandons the message and redelivers it, and the
+            // redelivery asks for Pending -> Running against a row this worker
+            // already moved to Running, so it is dropped by the claim guard. The
+            // guard cannot tell a duplicate from the same message retrying
+            // legitimately. Recovery is the sweep's job, not the queue's.
             throw;
         }
         catch (OperationCanceledException) when (budget.IsCancellationRequested)
