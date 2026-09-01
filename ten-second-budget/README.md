@@ -97,7 +97,7 @@ nobody asked for — and this is the set of invariants that survive it.
 
 | File | What it is |
 |---|---|
-| [`header-ten-second-budget.png`](header-ten-second-budget.png) / [`.webp`](header-ten-second-budget.webp) | Header image, 1600x800. Authored HTML rendered through headless Chrome — no image model. Source in [`support-files/header-ten-second-budget.html`](support-files/header-ten-second-budget.html). |
+| [`header-ten-second-budget.png`](header-ten-second-budget.png) / [`.webp`](header-ten-second-budget.webp) | Header image, 1600x800. Authored HTML rendered through headless Chrome — no image model. The card holds a miniature of the two-tiers figure rather than the turn-budget bars, so the header and the body do not show the same chart inside the first screen. Source in [`support-files/header-ten-second-budget.html`](support-files/header-ten-second-budget.html). |
 | [`turn-budget.png`](turn-budget.png) / [`.webp`](turn-budget.webp) | The three bounds drawn to scale against the two-minute loop bound, with the ten-second budget drawn through them. Source in [`support-files/turn-budget.html`](support-files/turn-budget.html). |
 | [`two-tiers.png`](two-tiers.png) / [`.webp`](two-tiers.webp) | The tiers labeled by failure model rather than happy path, and the single completing transaction that keeps the result table answerable. Source in [`support-files/two-tiers.html`](support-files/two-tiers.html). |
 | [`code-samples/01-task-kickoff-skill.cs`](code-samples/01-task-kickoff-skill.cs) | The kickoff skill. The point of the file is how ordinary it is — no branch, no background-mode flag, nothing for the existing tool-surface controls to miss. The row is created `Pending` before the message is enqueued, and the order is load-bearing. |

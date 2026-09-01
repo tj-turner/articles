@@ -7,6 +7,10 @@
   width Medium shows in a feed card. A light-ground variant was built and
   rejected: it read as no image at all against Medium's white page.
 
+  The card holds a miniature of two-tiers.html, not turn-budget.html: the body
+  embeds the turn-budget bars, and carrying the same chart in the header meant a
+  reader met the identical figure twice inside the first screen and a half.
+
   Drawn here with Article 5's content. To reuse: copy into
   <article>/support-files/header-<slug>.html, change the title, the subtitle and
   the figure in the right-hand card, and leave everything else alone. The kicker,
@@ -53,29 +57,25 @@
 
   <div class="hdr-art">
     <div class="hdr-card">
-      <div class="fig-title">What fits inside a turn</div>
-      <div class="fig-sub">To scale against the two-minute loop bound.</div>
+      <div class="fig-title">Two tiers, by how they fail</div>
+      <div class="fig-sub">The bound each one lives inside.</div>
 
-      <div class="bars" style="padding-top: 48px">
-        <div class="bar-zone" style="left: 168px; right: 74px; top: 48px">
-          <div class="threshold" style="left: 8.3%"><div class="threshold-label">10s</div></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px">
+        <div class="panel cool" style="padding:16px 18px; min-height:158px; box-sizing:border-box">
+          <span class="tag info" style="margin:0"><span class="dot"></span>Chat tier</span>
+          <div class="panel-bound" style="margin:14px 0 8px"><span class="num" style="font-size:36px">10s</span></div>
+          <div style="font-size:13px; color:var(--muted); line-height:1.45">Streamed to someone waiting on it.</div>
         </div>
+        <div class="panel warm" style="padding:16px 18px; min-height:158px; box-sizing:border-box">
+          <span class="tag" style="margin:0; background:linear-gradient(180deg,#fffdf6,#fbf1da); color:#7a5a12; border:1px solid #e8d3a0"><span class="dot" style="background:#c08a1e; box-shadow:0 0 0 3px rgba(192,138,30,.18)"></span>Task tier</span>
+          <div class="panel-bound" style="margin:14px 0 8px"><span class="num" style="font-size:36px">2 min</span></div>
+          <div style="font-size:13px; color:var(--muted); line-height:1.45">Runs on after the turn ends.</div>
+        </div>
+      </div>
 
-        <div class="bar-row" style="grid-template-columns: 152px 1fr 58px; gap: 12px; margin-bottom: 10px">
-          <div class="bar-name" style="font-size: 13.5px">A chat turn</div>
-          <div class="bar-track" style="height: 26px"><div class="bar-fill ok" style="width: 8.3%"></div></div>
-          <div class="bar-val" style="font-size: 13.5px">10s</div>
-        </div>
-        <div class="bar-row" style="grid-template-columns: 152px 1fr 58px; gap: 12px; margin-bottom: 10px">
-          <div class="bar-name" style="font-size: 13.5px">One report</div>
-          <div class="bar-track" style="height: 26px"><div class="bar-fill over" style="width: 37.5%"></div></div>
-          <div class="bar-val over" style="font-size: 13.5px">45s</div>
-        </div>
-        <div class="bar-row" style="grid-template-columns: 152px 1fr 58px; gap: 12px; margin-bottom: 0">
-          <div class="bar-name" style="font-size: 13.5px">Wall clock</div>
-          <div class="bar-track" style="height: 26px"><div class="bar-fill" style="width: 100%"></div></div>
-          <div class="bar-val" style="font-size: 13.5px">120s</div>
-        </div>
+      <div class="node green" style="margin-top:16px; padding:14px 16px">
+        <div class="node-name" style="font-size:14.5px">Write the result <i>and</i> mark Succeeded</div>
+        <div class="node-meta" style="margin-top:6px">One transaction. Both commit, or neither does.</div>
       </div>
     </div>
   </div>
