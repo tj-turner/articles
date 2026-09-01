@@ -5,16 +5,25 @@
 // model calls a skill, the skill returns, the turn ends.
 //
 // Be precise about what that inherits, because the dramatic answer is the wrong
-// one. The write block, argument locking, impact levels and the proposal path
-// are all WRITE controls, and a kickoff is a read - none of them fire here.
-// What it actually inherits is the boring list, and the boring list is the
-// argument: scope checks, classification, the generated argument schema, the
-// startup pairing check that refuses to boot a skill with no description file,
-// forensic logging, and the per-turn cap check.
+// one. Argument locking, impact levels and the proposal path are WRITE
+// controls, and a kickoff is a read, so none of them fire here. What it
+// actually inherits is the boring list, and the boring list is the argument:
+// scope checks, classification, the generated argument schema, the startup
+// pairing check that refuses to boot a skill with no description file, forensic
+// logging, and the per-turn cap check.
 //
-// Category is TaskKickoff, not Read, and that distinction does work: a kickoff
-// is not published into the catalog a worker composes from, so a report cannot
-// start another report.
+// The write block is the one that needs an answer rather than a shrug. It
+// latches on retrieval - once a turn has read anything, writes stop dispatching
+// for the rest of it - and a kickoff survives that latch because it is a read.
+// The exemption is conditional, and it is enforced at startup rather than
+// remembered by reviewers: the worker a kickoff starts must be read-only,
+// user-scoped and non-recursive, and the registry refuses to boot a kickoff
+// skill whose worker does not meet that bar.
+//
+// Category is TaskKickoff, not Read, and that is what gives the registry
+// something to check. It also keeps the skill out of the catalog a worker
+// composes from, which is the non-recursive half of the same rule: a report
+// cannot start another report.
 //
 // No Description on the attribute. Per the content-as-code piece, a skill's
 // description is a reviewed Markdown file with frontmatter bound to the skill

@@ -30,6 +30,12 @@ nobody asked for — and this is the set of invariants that survive it.
   called, and it fails in the direction that hurts: the misprediction you notice
   is a cheap question sent to a worker; the one you don't is the expensive
   question kept in the turn.
+- **The write-block exemption is conditional and enforced at startup.** The block
+  latches on retrieval, and a kickoff survives it because a kickoff is a read —
+  but only while the worker it starts is read-only, user-scoped and
+  non-recursive. The registry refuses to boot a kickoff skill whose worker misses
+  that bar, which is what `SkillCategory.TaskKickoff` is for: without a category
+  there is nothing to check, and the exemption is just a habit.
 - **The transition is the deduplication.** `@FromStatus` sits in the `WHERE`
   clause, so a status change either matches the row's current state or changes
   nothing, and `@@ROWCOUNT` is the whole answer. A redelivered message asks for
