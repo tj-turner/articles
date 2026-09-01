@@ -37,10 +37,16 @@ public sealed class StructuredReportWorker(
     IReportComposer composer,
     ILogger<StructuredReportWorker> log)
 {
-    // Strictly below the host's function timeout, and that margin is the whole
-    // mechanism. A budget equal to the host timeout has no time left to record
-    // TimedOut - both tokens trip together and the outcome is never written.
-    private static readonly TimeSpan Budget = TimeSpan.FromSeconds(100);
+    // The host's function timeout has to sit strictly above this, and the margin
+    // between the two is a real mechanism rather than slack. A budget equal to
+    // the host timeout leaves no time to record TimedOut - both tokens trip
+    // together and the outcome is never written.
+    //
+    // Provider retries live inside this budget, not beside it. A 429 carrying a
+    // twenty-second Retry-After spends twenty seconds of the two minutes, and
+    // the composer gets no say in that, because the token it was handed is the
+    // one already counting down.
+    private static readonly TimeSpan Budget = TimeSpan.FromSeconds(120);
 
     [Function(nameof(StructuredReportWorker))]
     public async Task RunAsync(

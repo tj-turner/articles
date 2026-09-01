@@ -53,6 +53,12 @@ nobody asked for — and this is the set of invariants that survive it.
   which is what turns the invariant from a rule a worker follows into a shape the
   schema will not let you express. What it costs is that one transaction means
   one database.
+- **Provider retries live inside the wall clock, not beside it.** A 429 carrying
+  a twenty-second `Retry-After` spends twenty seconds of the two minutes. The
+  composer is handed a linked token that is already counting down, so nothing
+  downstream has to cooperate for the bound to hold — and the host's function
+  timeout has to sit strictly above the budget, or there is no room left to
+  record `TimedOut`.
 - **The uncomfortable half.** A transient failure on the completing transaction
   is retried, and when the retries are exhausted a completed report is thrown
   away rather than written somewhere the invariant does not cover. The row stays
