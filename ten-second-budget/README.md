@@ -60,6 +60,15 @@ nobody asked for — and this is the set of invariants that survive it.
   client that was disconnected at the moment it fired. The row is already the
   source of truth, so the card asks the row. Same argument as kickoff being a
   skill, applied at the other end.
+- **The model never carries the report forward.** The conversation keeps the task
+  id; the payload is rendered to the user and nothing else. A user asking to see
+  it again is a `get-task-result` skill call, so re-reading a finished report
+  goes through the same dispatch controls as reading anything else, and a long
+  report costs the context window nothing on later turns.
+- **Classification floor and ceiling are an ordered enum, not strings.** Effective
+  classification is the higher of the two. Sorted as text, `Public` lands after
+  `Confidential`, so a public floor and a confidential ceiling resolve to public —
+  silently, and in the direction that declassifies.
 - **The envelope carries a version because the rows outlive the renderer.** A
   result row is written once and read for as long as the conversation exists, so
   the table is a permanent record of every payload shape ever emitted. Versioning

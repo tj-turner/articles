@@ -40,7 +40,9 @@ public sealed record StructuredReportPayload(
     // asked. The ceiling is a statement about the bytes, computed from the
     // composed result by the only thing that ever saw it whole. Effective
     // classification is the higher of the two, which is why they are an ordered
-    // enum and not strings - max() over strings gives the wrong answer.
+    // enum and not the strings they arrived as. Sorted as text, "Public" lands
+    // after "Confidential", so a public floor and a confidential ceiling resolve
+    // to public - silently, and in the direction that declassifies.
     Classification ClassificationFloor,
     Classification ClassificationCeiling,
     IReadOnlyList<string> DataSources);
