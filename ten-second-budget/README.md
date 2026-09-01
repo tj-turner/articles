@@ -92,12 +92,15 @@ state the invariant forbids — and so the sweeper had to look before it decided
 That state is no longer reachable, because nothing writes a result without
 moving the status in the same transaction.
 
-What is left is a timing question rather than a consistency one. A sweep that
-settles a task while its worker is still composing corrupts nothing: the
-worker's completion loses the guarded transition and rolls its own result back.
-It does throw away finished work. That makes the gap between the worker's budget
-and the sweep's patience a number worth picking deliberately, which is why
-sample 04 logs when it loses that race instead of swallowing it.
+What is left is a timing question rather than a consistency one, and it is
+answered by deriving one number from another. The sweep settles rows that have
+been `Running` longer than the worker's wall-clock budget plus a margin, so a
+worker still composing is never settled out from under — the row cannot be old
+enough to qualify while its worker is still allowed to run.
+
+Sample 04 logs a warning when its completion loses the transition anyway. That
+line should never print. If it does, the margin is wrong, and the visible
+symptom is a report that was finished and thrown away.
 
 ## License
 
