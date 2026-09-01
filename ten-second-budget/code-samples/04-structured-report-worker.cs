@@ -1,18 +1,18 @@
 // The worker. Service Bus triggered, one task per message.
 //
-// Read the order of the last two calls in the happy path: the result row is
-// written first, and only then is the task marked Succeeded. That direction is
-// what makes "a result row exists if and only if the task succeeded" true from
-// the reader's side. Succeeded is the last thing that happens, so a status of
-// Succeeded is never a promise the result is on its way.
+// The happy path is three calls: claim the row, compose the report, complete.
+// Completion is one call because it is one transaction - the result row and the
+// move to Succeeded commit together or neither of them happens. That is what
+// makes "a result row exists if and only if the task succeeded" true in both
+// directions rather than only one.
 //
-// Be precise about what that buys, because it is a convention and not a
-// database guarantee. Two tables are written in two transactions, so the
-// invariant holds because of the ordering plus the two rules below - the PK
-// conflict is treated as already-written, and nothing after a successful result
-// write is allowed to terminalize the task as Failed. If the two tables share a
-// database, one procedure holding both writes is strictly better and this file
-// is the wrong shape.
+// An earlier version wrote the result and then transitioned separately, in that
+// order. Ordering buys the direction that matters most - Succeeded is never a
+// promise a row is on its way - and cannot buy the other one. A worker that
+// died between the two writes left a result row on a task still marked Running,
+// which the recovery sweep then had to know about. One transaction retires that
+// whole class of problem, at the cost of requiring both tables to share a
+// database.
 //
 // The budget is a linked token, not a timer the composer is asked to respect.
 // Nothing downstream has to cooperate for it to hold, which is the same reason
@@ -21,10 +21,7 @@
 //
 // Known limit: a worker that dies after claiming leaves the task in Running,
 // and the redelivery finds nothing to claim, because Running is not Pending.
-// Recovering those rows is a separate mechanism and is not shown here. Note
-// what that mechanism has to do - it must check for a result row before it
-// settles an abandoned task, or it will mark a task Failed that has a result,
-// which is the one state the invariant forbids.
+// Recovering those rows is a separate mechanism and is not shown here.
 
 using System;
 using System.Threading;
@@ -38,7 +35,6 @@ namespace Platform.Ai.Workers;
 public sealed class StructuredReportWorker(
     ITaskStateStore tasks,
     IReportComposer composer,
-    ITaskResultStore results,
     ILogger<StructuredReportWorker> log)
 {
     // Strictly below the host's function timeout, and that margin is the whole
@@ -57,9 +53,8 @@ public sealed class StructuredReportWorker(
 
         if (!claimed)
         {
-            // Two different situations, and only one of them is routine.
-            // Distinguishing them needs the row's current status back from the
-            // transition; logged apart because the second one wants an alert.
+            // The routine case: a duplicate delivery arriving at a row that is
+            // no longer Pending. Nothing to undo, because nothing was done.
             log.LogInformation(
                 "Task {TaskId} was not Pending; dropping delivery.", kickoff.TaskId);
             return;
@@ -72,14 +67,28 @@ public sealed class StructuredReportWorker(
         {
             var payload = await composer.ComposeAsync(kickoff, budget.Token);
 
-            // CancellationToken.None from here down. Everything below is what
-            // makes the invariant true, and none of it may be abandoned partway
-            // because the host started draining.
-            await WriteResultAsync(kickoff.TaskId, payload);
+            // CancellationToken.None on purpose. This call is what makes the
+            // invariant true and it may not be abandoned partway because the
+            // host started draining.
+            var completion = await tasks.CompleteWithResultAsync(
+                kickoff.TaskId,
+                new TaskResultEnvelope<StructuredReportPayload>(
+                    Kind: "StructuredReport",
+                    Version: 1,
+                    Payload: payload),
+                CancellationToken.None);
 
-            await tasks.TryTransitionAsync(
-                kickoff.TaskId, AiTaskStatus.Running, AiTaskStatus.Succeeded,
-                reason: null, CancellationToken.None);
+            if (!completion.Transitioned)
+            {
+                // The row was not Running by the time the report was finished.
+                // The transaction rolled back, so there is nothing to clean up -
+                // but the status it came back with is worth reading. Failed or
+                // TimedOut means a sweep settled a task this worker was still
+                // working on, and the budget is not doing its job.
+                log.LogWarning(
+                    "Task {TaskId} was {Status} at completion; result discarded.",
+                    kickoff.TaskId, completion.CurrentStatus);
+            }
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -99,32 +108,12 @@ public sealed class StructuredReportWorker(
         }
     }
 
-    // A PK conflict means a previous attempt already wrote this exact result.
-    // That is the retry succeeding, not the retry failing, and treating it as an
-    // error is what would put a result row on a Failed task.
-    private async Task WriteResultAsync(Guid taskId, StructuredReportPayload payload)
-    {
-        try
-        {
-            await results.WriteAsync(
-                new TaskResultEnvelope<StructuredReportPayload>(
-                    Kind: "StructuredReport",
-                    Version: 1,
-                    Payload: payload),
-                taskId,
-                CancellationToken.None);
-        }
-        catch (DuplicateTaskResultException)
-        {
-            log.LogInformation("Result for {TaskId} was already written.", taskId);
-        }
-    }
-
     // CancellationToken.None on purpose: the terminal status has to be recorded
     // even when the reason for recording it is that everything else was
     // canceled. Retried by the store's transient policy, and if that is
     // exhausted the row stays Running rather than lying about the outcome - a
-    // database too sick to take the result write will not take this one either.
+    // database too sick to take the completing transaction will not take this
+    // one either.
     private Task MarkAsync(Guid taskId, AiTaskStatus status, string reason) =>
         tasks.TryTransitionAsync(taskId, AiTaskStatus.Running, status, reason, CancellationToken.None);
 }

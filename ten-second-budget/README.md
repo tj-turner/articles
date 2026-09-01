@@ -32,21 +32,29 @@ nobody asked for — and this is the set of invariants that survive it.
   nothing, and `@@ROWCOUNT` is the whole answer. A redelivered message asks for
   `Pending → Running` against a row already `Running`, gets zero back, and
   returns. Losing that race is not an error and does not `THROW`.
-- **A result row exists if and only if the task succeeded.** The result is
-  written first and the status is marked `Succeeded` second, so `Succeeded` is
-  never a promise a row is on its way. Every failure path leaves the result table
-  alone, which keeps "did this work" a single query.
-- **That invariant is a convention, not a database guarantee.** Two tables in two
-  transactions means the ordering holds it up, plus two rules: a `TaskId` PK
-  conflict is treated as already-written rather than as an error, and nothing
-  after a successful result write may terminalize the task as `Failed`. If both
-  tables live in one database, a single procedure holding both writes is
-  strictly better than the ordering discipline.
-- **The uncomfortable half.** A transient failure on the result write is retried,
-  and when the retries are exhausted a completed report is thrown away rather
-  than written somewhere the invariant does not cover. The row stays `Running` —
-  a database too sick to take the result write will not record a clean `Failed`
-  either.
+- **A result row exists if and only if the task succeeded.** Every failure path
+  leaves the result table alone, so `Failed` and `TimedOut` tasks are exactly the
+  ones with no result and "did this work" stays a single query.
+- **Ordering only reaches one direction; a transaction reaches both.** The first
+  version wrote the result and then transitioned, which makes `Succeeded` the
+  last thing that happens and cannot say anything about a worker dying in the
+  gap. Both writes are one procedure and one transaction now — the result row and
+  `Running → Succeeded` commit together or neither does.
+- **Deduplication and atomicity turn out to be the same mechanism.** The guarded
+  transition sits inside the completing transaction, so a duplicate that got as
+  far as a composed report loses the transition, reads zero back, and takes its
+  own result row down with the rollback — without needing to work out that it was
+  a duplicate.
+- **`Running → Succeeded` is not in the transition procedure's legal list.** The
+  only path to `Succeeded` is the procedure that writes the result alongside it,
+  which is what turns the invariant from a rule a worker follows into a shape the
+  schema will not let you express. What it costs is that one transaction means
+  one database.
+- **The uncomfortable half.** A transient failure on the completing transaction
+  is retried, and when the retries are exhausted a completed report is thrown
+  away rather than written somewhere the invariant does not cover. The row stays
+  `Running` — a database too sick to take that commit will not record a clean
+  `Failed` either.
 - **The envelope carries a version because the rows outlive the renderer.** A
   result row is written once and read for as long as the conversation exists, so
   the table is a permanent record of every payload shape ever emitted. Versioning
@@ -58,11 +66,12 @@ nobody asked for — and this is the set of invariants that survive it.
 |---|---|
 | [`header-ten-second-budget.png`](header-ten-second-budget.png) / [`.webp`](header-ten-second-budget.webp) | Header image, 1600x800. Authored HTML rendered through headless Chrome — no image model. Source in [`support-files/header-ten-second-budget.html`](support-files/header-ten-second-budget.html). |
 | [`turn-budget.png`](turn-budget.png) / [`.webp`](turn-budget.webp) | The three bounds drawn to scale against the two-minute loop bound, with the ten-second budget drawn through them. Source in [`support-files/turn-budget.html`](support-files/turn-budget.html). |
-| [`two-tiers.png`](two-tiers.png) / [`.webp`](two-tiers.webp) | The tiers labeled by failure model rather than happy path, and the write ordering that keeps the result table answerable. Source in [`support-files/two-tiers.html`](support-files/two-tiers.html). |
+| [`two-tiers.png`](two-tiers.png) / [`.webp`](two-tiers.webp) | The tiers labeled by failure model rather than happy path, and the single completing transaction that keeps the result table answerable. Source in [`support-files/two-tiers.html`](support-files/two-tiers.html). |
 | [`code-samples/01-task-kickoff-skill.cs`](code-samples/01-task-kickoff-skill.cs) | The kickoff skill. The point of the file is how ordinary it is — no branch, no background-mode flag, nothing for the existing tool-surface controls to miss. The row is created `Pending` before the message is enqueued, and the order is load-bearing. |
-| [`code-samples/02-usp-aitask-updatestatus.sql`](code-samples/02-usp-aitask-updatestatus.sql) | The single state-transition procedure. One guarded `UPDATE`, `@@ROWCOUNT` as the verdict, and no `THROW` on a losing transition. |
-| [`code-samples/03-structured-report-worker.cs`](code-samples/03-structured-report-worker.cs) | The Service Bus triggered worker: claim, compose under a linked wall-clock token, write the result, then mark `Succeeded`. Timeout is distinguished from host shutdown, which should be left to redeliver. |
-| [`code-samples/04-task-result-envelope.cs`](code-samples/04-task-result-envelope.cs) | `{Kind, Version, Payload}`, and the report payload that carries its own classification floor and ceiling because the turn that produced it is gone by the time anyone opens the row. |
+| [`code-samples/02-usp-aitask-updatestatus.sql`](code-samples/02-usp-aitask-updatestatus.sql) | The state-transition procedure. One guarded `UPDATE`, `@@ROWCOUNT` as the verdict, no `THROW` on a losing transition — and no `Running → Succeeded` in its legal list, because that transition belongs to the procedure below. |
+| [`code-samples/03-usp-aitask-completewithresult.sql`](code-samples/03-usp-aitask-completewithresult.sql) | Completion: the result row and the guarded move to `Succeeded` inside one transaction. A losing transition rolls its own result row back, which is the whole duplicate-handling story. |
+| [`code-samples/04-structured-report-worker.cs`](code-samples/04-structured-report-worker.cs) | The Service Bus triggered worker: claim, compose under a linked wall-clock token, complete. Timeout is distinguished from host shutdown, which should be left to redeliver. |
+| [`code-samples/05-task-result-envelope.cs`](code-samples/05-task-result-envelope.cs) | `{Kind, Version, Payload}`, and the report payload that carries its own classification floor and ceiling because the turn that produced it is gone by the time anyone opens the row. |
 
 The `.cs` files are illustrative rather than a compiling set — they reference
 interfaces (`ITaskStateStore`, `IReportComposer`, `ITaskQueue`) that belong to
@@ -76,12 +85,19 @@ that makes duplicate deliveries cheap is the same guard that makes an abandoned
 row unreachable. Recovering those rows is a separate mechanism and is not shown
 in these samples.
 
-That mechanism is load-bearing for the headline invariant, which is why leaving
-it out is a real gap rather than a tidy scope boundary. `succeeded → row exists`
-is guaranteed by the write ordering. `row exists → succeeded` is not: a worker
-can die between the two writes, and a sweeper that settles abandoned `Running`
-rows to `Failed` without first checking for a result row creates precisely the
-state the invariant forbids. The sweeper has to look before it decides.
+Collapsing the two writes into one transaction took the sharp edge off that. The
+earlier version had to worry that a sweeper settling an abandoned `Running` row
+to `Failed` was settling a task that had already written its result — the one
+state the invariant forbids — and so the sweeper had to look before it decided.
+That state is no longer reachable, because nothing writes a result without
+moving the status in the same transaction.
+
+What is left is a timing question rather than a consistency one. A sweep that
+settles a task while its worker is still composing corrupts nothing: the
+worker's completion loses the guarded transition and rolls its own result back.
+It does throw away finished work. That makes the gap between the worker's budget
+and the sweep's patience a number worth picking deliberately, which is why
+sample 04 logs when it loses that race instead of swallowing it.
 
 ## License
 

@@ -1,7 +1,14 @@
--- The single state-transition procedure for the task tier.
+-- The state-transition procedure for the task tier.
 --
--- Every status change in the task lifecycle goes through this one procedure:
---     Pending -> Running -> Succeeded | Failed | TimedOut
+-- Every status change goes through this one procedure, with one exception:
+--     Pending -> Running -> Failed | TimedOut
+--
+-- Running -> Succeeded is missing on purpose. Succeeding means writing a result
+-- row and moving the status in a single transaction, which is a different
+-- procedure - usp_AiTask_CompleteWithResult, sample 03. Leaving the transition
+-- out of the table below is what makes "a result row exists if and only if the
+-- task succeeded" unforgeable: there is no statement anywhere that can mark a
+-- task Succeeded without writing the result alongside it.
 --
 -- The guard is the whole design. @FromStatus is in the WHERE clause, so the
 -- transition either matches the row's current state or it changes nothing, and
@@ -39,7 +46,7 @@ BEGIN
     -- move and you are not the one who moves it."
     IF NOT EXISTS (SELECT 1 FROM (VALUES
             ('Pending','Running'), ('Pending','TimedOut'),
-            ('Running','Succeeded'), ('Running','Failed'), ('Running','TimedOut')
+            ('Running','Failed'),  ('Running','TimedOut')
         ) AS legal(f, t) WHERE f = @FromStatus AND t = @ToStatus)
     BEGIN
         RETURN;

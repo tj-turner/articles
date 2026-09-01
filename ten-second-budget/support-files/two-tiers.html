@@ -10,6 +10,11 @@
   are nearly identical and are the boring half - what separates the tiers is who
   asks for the retry, and whether anybody is watching when it arrives.
 
+  The flow band under the divider is the task tier's completion, and its point
+  is that the last step is one box rather than two. An earlier version drew the
+  result write and the status change as separate nodes, which is what the system
+  used to do; the gap between those two boxes was the whole problem.
+
   Render, from support-files/:
     node local/render-figure.js two-tiers.html local/two-tiers.png
     magick local/two-tiers.png -quality 92 -define webp:method=6 ../two-tiers.webp
@@ -61,30 +66,30 @@
 
   </div>
 
-  <div class="divider"><span class="divider-text">The ordering that makes the result table answerable</span></div>
+  <div class="divider"><span class="divider-text">Completion is one transaction, under the same guard</span></div>
 
   <div class="flow">
     <div class="node amber">
       <div class="node-name">Claim</div>
       <div class="node-meta"><span class="pill amber">Pending &rarr; Running</span><br>Zero rows updated means another delivery won.</div>
     </div>
-    <div class="arrow wide"><span class="arrow-label">only the winner continues</span></div>
+    <div class="arrow wide"><span class="arrow-label">only the winner composes</span></div>
     <div class="node">
-      <div class="node-name">Write the result row</div>
-      <div class="node-meta">First. <span class="pill">TaskId</span> is the primary key, so a retry conflicts rather than duplicating.</div>
+      <div class="node-name">Compose</div>
+      <div class="node-meta">Under a linked token, so the wall clock cancels the calls still in flight rather than letting them land.</div>
     </div>
-    <div class="arrow wide"><span class="arrow-label">and only then</span></div>
+    <div class="arrow wide"><span class="arrow-label">then, in one transaction</span></div>
     <div class="node green">
-      <div class="node-name">Mark Succeeded</div>
-      <div class="node-meta">Last. So <span class="pill green">Succeeded</span> is never a promise a row is on its way.</div>
+      <div class="node-name">Write the result <i>and</i> mark Succeeded</div>
+      <div class="node-meta"><span class="pill">INSERT result</span> <span class="pill green">Running &rarr; Succeeded</span><br>Both commit or neither does, so a loser's result row goes back with the rollback.</div>
     </div>
   </div>
 
   <div class="fig-note">
     <b>Every failure path leaves the result table alone.</b> A composer that throws, a
-    wall clock that expires, a write that exhausts its retries — none of them writes a
-    partial row, so <b>Failed</b> and <b>TimedOut</b> tasks are exactly the ones with no
-    result, and "did this work" stays a single query.
+    wall clock that expires, a transaction that exhausts its retries — none of them
+    leaves a partial row, so <b>Failed</b> and <b>TimedOut</b> tasks are exactly the ones
+    with no result, and "did this work" stays a single query.
   </div>
 
 </body>
