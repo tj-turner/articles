@@ -55,6 +55,11 @@ nobody asked for — and this is the set of invariants that survive it.
   away rather than written somewhere the invariant does not cover. The row stays
   `Running` — a database too sick to take that commit will not record a clean
   `Failed` either.
+- **The card polls the task row; nothing is pushed to it.** A push would be a
+  second way for the answer to arrive, carrying its own delivery problem — the
+  client that was disconnected at the moment it fired. The row is already the
+  source of truth, so the card asks the row. Same argument as kickoff being a
+  skill, applied at the other end.
 - **The envelope carries a version because the rows outlive the renderer.** A
   result row is written once and read for as long as the conversation exists, so
   the table is a permanent record of every payload shape ever emitted. Versioning
