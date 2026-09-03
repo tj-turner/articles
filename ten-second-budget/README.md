@@ -61,7 +61,7 @@ nobody asked for — and this is the set of invariants that survive it.
   while the app principal has `EXECUTE` on the two procedures and no direct
   `UPDATE` on the table. What it costs is that one transaction means one
   database.
-- **Provider retries live inside the wall clock, not beside it.** A 429 carrying
+- **Provider retries live inside the wall clock, not beside it.** An HTTP 429 carrying
   a twenty-second `Retry-After` spends twenty seconds of the two minutes. The
   composer is handed a clock that is already counting down, so it cannot extend
   the budget by starting its own — though a linked token is cooperative, so the
@@ -79,8 +79,8 @@ nobody asked for — and this is the set of invariants that survive it.
   fanout infrastructure, no reconnect path, and at UAT volumes the load is
   nothing. It is worth naming what that trades, though: the poll lands on the
   same database the completing transaction has to be healthy enough to accept.
-- **The model never carries the report forward.** The conversation keeps the task
-  id; the payload is rendered to the user and nothing else. A user asking to see
+- **The model never carries the report forward.** The task id sits on the
+  conversation record rather than in the message history; the payload is rendered to the user and nothing else. A user asking to see
   it again is a `get-task-result` skill call, so re-reading a finished report
   goes through the same dispatch controls as reading anything else, and a long
   report costs the context window nothing on later turns.
@@ -100,7 +100,7 @@ nobody asked for — and this is the set of invariants that survive it.
 | [`header-ten-second-budget.png`](header-ten-second-budget.png) / [`.webp`](header-ten-second-budget.webp) | Header image, 1600x800. Authored HTML rendered through headless Chrome — no image model. The card holds a miniature of the two-tiers figure rather than the turn-budget bars, so the header and the body do not show the same chart inside the first screen. Source in [`support-files/header-ten-second-budget.html`](support-files/header-ten-second-budget.html). |
 | [`turn-budget.png`](turn-budget.png) / [`.webp`](turn-budget.webp) | The three bounds drawn to scale against the two-minute loop bound, with the ten-second budget drawn through them. Source in [`support-files/turn-budget.html`](support-files/turn-budget.html). |
 | [`two-tiers.png`](two-tiers.png) / [`.webp`](two-tiers.webp) | The tiers labeled by failure model rather than happy path, and the single completing transaction that keeps the result table answerable. Source in [`support-files/two-tiers.html`](support-files/two-tiers.html). |
-| [`code-samples/01-task-kickoff-skill.cs`](code-samples/01-task-kickoff-skill.cs) | The kickoff skill. The point of the file is how ordinary it is — no branch, no background-mode flag, nothing for the existing tool-surface controls to miss. The row is created `Pending` before the message is enqueued, and the order is load-bearing. |
+| [`code-samples/01-task-kickoff-skill.cs`](code-samples/01-task-kickoff-skill.cs) | The kickoff skill. The point of the file is how ordinary it is — no special path, no background-mode flag, nothing for the existing tool-surface controls to miss. The row is created `Pending` before the message is enqueued, and the order is load-bearing. |
 | [`code-samples/02-usp-aitask-updatestatus.sql`](code-samples/02-usp-aitask-updatestatus.sql) | The state-transition procedure. One guarded `UPDATE`, `@@ROWCOUNT` as the verdict, no `THROW` on a losing transition — and no `Running → Succeeded` in its legal list, because that transition belongs to the procedure below. |
 | [`code-samples/03-usp-aitask-completewithresult.sql`](code-samples/03-usp-aitask-completewithresult.sql) | Completion: the result row and the guarded move to `Succeeded` inside one transaction. A losing transition rolls its own result row back, which is the whole duplicate-handling story. |
 | [`code-samples/04-structured-report-worker.cs`](code-samples/04-structured-report-worker.cs) | The Service Bus triggered worker: claim, compose under a linked wall-clock token, complete. Timeout is distinguished from host shutdown, which should be left to redeliver. |
