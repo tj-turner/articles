@@ -7,6 +7,7 @@ software architecture, and the messy intersection of all three.
 
 | Article | Code | Published |
 |---|---|---|
+| [The Ten-Second Budget: Where Long Work Goes When Chat Can't Hold It](https://levelup.gitconnected.com/the-ten-second-budget-where-long-work-goes-when-chat-cant-hold-it-5124bb617e2c) | [`ten-second-budget/`](ten-second-budget/) | 2026-09 |
 | [Documents Are Never Instructions: Safety Walls That Don't Ask Who Wrote It](https://levelup.gitconnected.com/documents-are-never-instructions-safety-walls-that-dont-ask-who-wrote-it-4159c14a5a62) | [`documents-are-never-instructions/`](documents-are-never-instructions/) | 2026-08 |
 | [Content-as-Code for AI: Prompts and Skills You'd Actually Review](https://levelup.gitconnected.com/content-as-code-for-ai-prompts-and-skills-youd-actually-review-6b67401d52c7) | [`content-as-code/`](content-as-code/) | 2026-08 |
 | [The Shared Foundation: Building an AI Library You'd Actually Reuse](https://levelup.gitconnected.com/the-shared-foundation-building-an-ai-library-youd-actually-reuse-4b156de92bd3) | [`shared-foundation/`](shared-foundation/) | 2026-08 |

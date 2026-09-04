@@ -6,7 +6,7 @@ tier. What that bought was a second failure model — a chat turn that dies is a
 retry someone asked for, and a worker that dies is a Service Bus redelivery
 nobody asked for — and this is the set of invariants that survive it.
 
-**[Read the full article on Level Up Coding →](#)** *(link pending publish)*
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/the-ten-second-budget-where-long-work-goes-when-chat-cant-hold-it-5124bb617e2c)**
 
 ## TL;DR
 
