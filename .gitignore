@@ -9,6 +9,20 @@
 # Variant images, scratch renders, and other working artifacts.
 */archives/
 
+# Unpublished work lives one level deeper, in drafts/, so the repo root holds
+# only folders whose links are live in a published article. Published folders
+# never move: every post links to github.com/.../tree/main/<slug>/ and GitHub
+# does not redirect a moved path. A draft is promoted to the root *before* its
+# post goes live, not after.
+#
+# The patterns above are one level deep, so drafts/ needs its own copies.
+drafts/*/*.md
+!drafts/*/README.md
+drafts/*/archives/
+drafts/*/support-files/local/
+drafts/*/HANDOFF.md
+
+
 # An article's figures live in support-files/ to keep the article folder itself
 # down to what a reader wants: README, header, and the images the piece embeds.
 # support-files/ is published — diagram source belongs there. Anything that is
