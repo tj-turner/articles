@@ -116,7 +116,7 @@ two-minute budget and the host-timeout margin were published.
 | [`report-card-mock.png`](report-card-mock.png) / [`.webp`](report-card-mock.webp) | A mock of what comes back now: the summary and chart totaled over all 1,100 of the test business's payables, the coverage line, the as-of stamp, and the detail leaving as a PDF because 1,100 rows are past the cap. A mock rather than a screenshot — the real panel carries a business name, a task id and a tenant guid. Source in [`support-files/report-card-mock.html`](support-files/report-card-mock.html). |
 | [`code-samples/01-paged-gather.cs`](code-samples/01-paged-gather.cs) | The paged gather, with the de-duplication keyed on the real grain and completeness claimed against a source count where one exists. Carries a `TimeProvider` and a gather deadline that deliberately excludes a composition reserve, and a per-page forecast that is labeled a forecast rather than a constant. |
 | [`code-samples/02-unbounded-fanout.cs`](code-samples/02-unbounded-fanout.cs) | The shape that produced the empty success: a round trip per item, awaited all at once, behind a catch that returns an empty list. Then two repairs — a bounded, order-preserving projection, and the cancellation filter that stops a stalled dependency being recorded as a self-inflicted timeout. |
-| [`code-samples/03-report-as-of.sql`](code-samples/03-report-as-of.sql) | The reporting read: one snapshot transaction, the row count in the same statement as the rows, the sync high-water mark rendered as the as-of stamp, and the tolerance check that refuses to render a stale or future-stamped report. `@MaxRows` is the page size the caller loops with to total the whole set, not a cap on the answer. |
+| [`code-samples/03-report-as-of.sql`](code-samples/03-report-as-of.sql) | The reporting read: one snapshot transaction, the row count in the same statement as the rows, the sync high-water mark rendered as the as-of stamp, and the tolerance check that refuses to render a stale or future-stamped report. `@MaxRows` is how many rows one read returns — the warehouse is fetched 500 at a time underneath it, and the caller keeps reading until it has the whole set — not a cap on the answer. |
 
 The `.cs` files are illustrative rather than a compiling set — they reference
 interfaces that belong to the shared library rather than to this article. The
@@ -131,14 +131,24 @@ records that it was cut off — which means a report needing sixteen minutes
 produces nothing at all, rather than a partial table carrying the coverage
 warning the capped gather already knows how to write.
 
+There is no token ceiling on a report. Eight model rounds carrying large tool
+results can spend a lot inside the fifteen minutes, and what holds it down in
+practice is the row summarization — more than five rows becomes a count and a
+sample — rather than anything that would stop it. The per-round logging does not
+cover this one either, because the report loop does not run through the
+orchestrator that logging sits on. We are watching UAT to work out where a cap
+belongs and whether a cap is the right shape for it.
+
 The row cap is a limit on chat output, not on what can be read. Eight hundred
 detail rows was what we would put in a chat card (`RowCeiling` in
 [`01-paged-gather.cs`](code-samples/01-paged-gather.cs)); nobody measured it, and
 one number stands in for three limits: rows held in memory, the size of the
 serialized result, and what the results table stores. The summary is not capped —
-the caller pages the warehouse read (`@MaxRows` in
-[`03-report-as-of.sql`](code-samples/03-report-as-of.sql)) and totals as it goes,
-so payables by status and the chart over it cover every row. That detail ceiling
+one read returns two thousand rows (`@MaxRows` in
+[`03-report-as-of.sql`](code-samples/03-report-as-of.sql)), the warehouse is
+fetched five hundred at a time underneath that, and the caller keeps reading and
+totaling until it has the set, so payables by status and the chart over it cover
+every row the business has. That detail ceiling
 is where the export came from: the biggest business holds over five hundred
 thousand payables, which no chat window renders. The cap is a hundred now, and
 anything above it comes back as a PDF with an Excel or CSV export option.

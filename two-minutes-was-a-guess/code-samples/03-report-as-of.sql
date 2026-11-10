@@ -55,12 +55,13 @@ GO
 
 CREATE OR ALTER PROCEDURE dbo.usp_Report_PayablesByRecipient
     @BusinessId    UNIQUEIDENTIFIER,
-    -- A page size for the detail read, not a cap on the answer. The caller loops
-    -- pages and totals as it goes, so the summary section — payables by status, and
-    -- the chart over it — covers every row the business has, while only the detail
-    -- table is capped (800 rows when this was written, 100 now, and an export beyond
-    -- that). Each call is its own snapshot, so the as-of can move between pages: the
-    -- loop has to decide what to do about that, because this proc cannot.
+    -- How many rows one read returns, not a cap on the answer. Underneath it the
+    -- warehouse is fetched 500 rows at a time, and the caller keeps reading until it
+    -- has the set, totaling as it goes — so the summary section (payables by status,
+    -- and the chart over it) covers every row the business has, while only the detail
+    -- table is capped: 800 rows when this was written, 100 now, and an export past
+    -- that. Each read is its own snapshot, so the as-of can move between them, and
+    -- the loop has to decide what to do about that because this proc cannot.
     @MaxRows       INT = 2000,
     @ErrorFound    BIT           = 0 OUTPUT,
     @ErrorMessage  NVARCHAR(400) = NULL OUTPUT
