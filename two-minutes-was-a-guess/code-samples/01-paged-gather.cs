@@ -55,8 +55,9 @@ public sealed class PagedPayablesGather(IPayablesReader reader, TimeProvider? cl
     /// cover everything. Nobody measured 800. It stands in for three separate
     /// pressures — rows held in memory, the size of the serialized result, and what
     /// the results table will store — so the first of the three to actually hurt is
-    /// the one that should set it. The warehouse read has its own, different cap
-    /// (@MaxRows, 2000) for the same three reasons and with no more evidence.</summary>
+    /// the one that should set it. This bounds what the chat card renders; it is not
+    /// the bound on what the warehouse read fetches, which pages and totals as it
+    /// goes (see @MaxRows in 03-report-as-of.sql).</summary>
     public static readonly int RowCeiling = 800;
 
     /// <summary>What a page cost when the ceiling was calibrated. A forecast, not a
