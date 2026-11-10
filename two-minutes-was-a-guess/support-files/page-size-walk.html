@@ -1,0 +1,123 @@
+<!doctype html>
+<!--
+  "Walking the page size up" — Two Minutes Was a Guess.
+
+  Budget bars rather than a table, for two reasons. Medium has no table editor,
+  so a markdown table ships as an image anyway — and a picture of a table buries
+  the only thing the measurement proves. The argument is that the failure is
+  FASTER than the success, which a reader has to work out by comparing two cells
+  in a table and can see at a glance in two bars of different lengths.
+
+  Bar lengths are the true share of 64s, the longest time measured, so the 120
+  bar is genuinely shorter than the 110 bar above it. The 100-row row carries a
+  range, drawn as a solid bar to 50s with a lighter extension to 55s, because
+  that is what was observed and a single averaged bar would be a number nobody
+  recorded.
+
+  The cliff is drawn between the rows rather than through them: the limit is not
+  a point on the time axis, it is the page size at which the request stops being
+  served at all.
+
+  Render, from support-files/:
+    node local/render-figure.js page-size-walk.html local/page-size-walk.png
+    magick local/page-size-walk.png -quality 92 -define webp:method=6 ../page-size-walk.webp
+    magick local/page-size-walk.png -strip -define png:compression-level=9 ../page-size-walk.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Walking the page size up</title>
+<link rel="stylesheet" href="../../figure-kit/kit.css">
+<style>
+  .bar-row { grid-template-columns: 210px 1fr 150px; }
+  .bar-name { font-size: 20px; font-family: var(--mono); font-weight: 700; color: var(--navy); }
+  .bar-name span { font-family: var(--sans); font-size: 13px; font-weight: 600; margin-top: 3px; }
+  .bar-name.dead { color: var(--red-t); }
+  .bar-name.dead span { color: var(--red-t); }
+
+  /* The lighter tail on the 100-row bar: observed 50-55s, so the range is drawn
+     instead of collapsed to a midpoint nobody measured. */
+  .bar-range { position: absolute; top: 0; bottom: 0; border-radius: 0 8px 8px 0;
+               background: linear-gradient(180deg,#8fcdaa,#6bb98d); opacity: .72; }
+
+  .bar-empty { position: absolute; inset: 0; display: flex; align-items: center;
+               padding-left: 16px; font-size: 13.5px; font-weight: 600; color: var(--red-t); }
+
+  /* The cliff sits between two rows, not along the axis. */
+  .cliff { display: flex; align-items: center; gap: 14px; margin: 20px 0 22px; }
+  .cliff::before, .cliff::after { content: ""; height: 0; flex: 1;
+               border-top: 2.5px dashed var(--red); }
+  .cliff-text { font-size: 14.5px; font-weight: 700; color: var(--red-t);
+               white-space: nowrap; letter-spacing: .1px; }
+  .cliff-text code { font-family: var(--mono); font-size: 13.5px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+  <div class="fig-title">Walking the page size up</div>
+  <div class="fig-sub">
+    One test business holding about eleven hundred payables. Fifty rows a page was the
+    contract; we went looking for a bigger one.
+  </div>
+
+  <div class="bars">
+
+    <div class="bar-row">
+      <div class="bar-name">50<span>rows returned</span></div>
+      <div class="bar-track">
+        <div class="bar-fill ok" style="width:35.9%"></div>
+      </div>
+      <div class="bar-val">23s</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-name">100<span>rows returned</span></div>
+      <div class="bar-track">
+        <div class="bar-fill ok" style="width:78.1%"></div>
+        <div class="bar-range" style="left:78.1%; width:7.8%"></div>
+      </div>
+      <div class="bar-val">50&ndash;55s</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-name">110<span>rows returned</span></div>
+      <div class="bar-track">
+        <div class="bar-fill ok" style="width:100%"></div>
+      </div>
+      <div class="bar-val">64s</div>
+    </div>
+
+    <div class="cliff">
+      <div class="cliff-text">
+        somewhere in here the worker budget is gone, and the request is rejected rather than slowed
+      </div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-name dead">120<span>came back empty</span></div>
+      <div class="bar-track">
+        <div class="bar-fill over" style="width:56.3%"></div>
+      </div>
+      <div class="bar-val over">36s</div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-name dead">150+<span>came back empty</span></div>
+      <div class="bar-track">
+        <div class="bar-empty">no rows, no time recorded</div>
+      </div>
+      <div class="bar-val over">&mdash;</div>
+    </div>
+
+  </div>
+
+  <div class="fig-note">
+    <b>The failure is faster than the success</b>, which is not how a timeout behaves. Measured
+    from a workstation across a hop into the private network, so the absolute times come down
+    in-region &mdash; and measured on one afternoon, which is the other half of the problem: the
+    worker budget is shared across every caller of that database, so the page size where this
+    cliff falls moves with whatever else is running.
+  </div>
+
+</body>
+</html>
