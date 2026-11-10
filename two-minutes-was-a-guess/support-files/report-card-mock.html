@@ -1,0 +1,254 @@
+<!doctype html>
+<!--
+  "What comes back now" — a mock of the report card in the chat window.
+
+  A mock, not a screenshot: the real panel carries a business name, a task id and
+  a tenant guid, none of which ship in an article. Every number here is one the
+  article already uses — about eleven hundred payables for the test business, a
+  hundred detail rows, a fifteen-minute refresh cadence — and the four status
+  amounts sum to the total on purpose, because a figure whose own arithmetic does
+  not close is a figure a reader stops trusting. The bars are the real shares of
+  that total, not scaled to the largest, for the same reason.
+
+  Why this case and not a small one: under the cap the detail renders in the card,
+  which is the boring version. At eleven hundred the summary still covers every
+  row while the detail has to leave as a file, which is the whole point of the
+  cap and the reason the export exists.
+
+  Layout: the chart sits beside the tiles rather than under them. Stacked, this
+  figure came out 1.26:1 and swallowed a phone screen; the series runs about 2:1.
+
+  Render, from support-files/:
+    node local/render-figure.js report-card-mock.html local/report-card-mock.png
+    magick local/report-card-mock.png -quality 92 -define webp:method=6 ../report-card-mock.webp
+    magick local/report-card-mock.png -strip -define png:compression-level=9 ../report-card-mock.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What comes back now — report card mock</title>
+<link rel="stylesheet" href="../../../figure-kit/kit.css">
+<style>
+  body { width: 1420px; padding: 32px 36px 28px; }
+  .fig-sub { margin-bottom: 20px; }
+
+  /* ---- the chat window ---------------------------------------------------- */
+  .win {
+    border-radius: 15px; overflow: hidden;
+    border: 1.5px solid #c9dcec; box-shadow: var(--lift);
+    background: linear-gradient(180deg,#ffffff,#f7fbfe);
+  }
+  .win-bar {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 16px; border-bottom: 1.5px solid var(--hair);
+    background: linear-gradient(180deg,#f4f9fd,#e9f2fa);
+    font-size: 13px; font-weight: 600; color: var(--navy);
+  }
+  .win-dots { display: flex; gap: 6px; }
+  .win-dots i { width: 9px; height: 9px; border-radius: 50%; background: #cdddea; }
+  .win-body { padding: 16px 18px 18px; }
+
+  /* ---- the asking turn ---------------------------------------------------- */
+  .ask { display: flex; justify-content: flex-end; margin-bottom: 13px; }
+  .ask span {
+    padding: 10px 15px; border-radius: 14px 14px 4px 14px;
+    background: linear-gradient(180deg,#2f76b8,var(--navy-d)); color: #fff;
+    font-size: 14.5px; box-shadow: 0 6px 16px -8px rgba(23,61,97,.75);
+  }
+
+  /* ---- the answer card ---------------------------------------------------- */
+  .card {
+    border-radius: 13px; border: 1.5px solid var(--blue-br);
+    background: #fff; box-shadow: var(--lift); overflow: hidden;
+  }
+  .card-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
+    padding: 13px 17px 12px; border-bottom: 1.5px solid var(--hair);
+    background: linear-gradient(180deg,#fbfdff,#f2f8fd);
+  }
+  .card-title { font-size: 18px; font-weight: 700; letter-spacing: -.2px; }
+  .card-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .asof { text-align: right; font-size: 12px; color: var(--muted); line-height: 1.4; white-space: nowrap; }
+  .asof b { display: block; font-family: var(--mono); font-size: 13px; color: var(--navy); }
+
+  .card-body { padding: 15px 17px 16px; }
+
+  /* Tiles on the left, the chart that goes with them on the right. */
+  .grid { display: grid; grid-template-columns: 1.08fr 1fr; gap: 18px; align-items: start; }
+
+  .sum { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+  .sum-cell {
+    position: relative; overflow: hidden; border-radius: 10px; padding: 11px 13px 10px;
+    background: linear-gradient(180deg,#fbfdff,#eff6fc);
+    border: 1.5px solid var(--blue-br);
+  }
+  .sum-cell::before { content:""; position:absolute; left:0; top:0; bottom:0; width:5px;
+                      background: linear-gradient(180deg,#3f83c4,var(--blue)); }
+  .sum-cell.late { background: linear-gradient(180deg,#fffaf9,var(--red-l)); border-color: var(--red-br); }
+  .sum-cell.late::before { background: linear-gradient(180deg,#d4553f,var(--red)); }
+  .sum-amt { font-size: 21px; font-weight: 700; letter-spacing: -.7px; color: var(--navy); line-height: 1; }
+  .sum-cell.late .sum-amt { color: var(--red-t); }
+  .sum-name { font-size: 13px; font-weight: 600; margin-top: 6px; }
+  .sum-cnt  { font-size: 12px; color: var(--muted); margin-top: 1px; font-family: var(--mono); }
+
+  .chart { padding-left: 18px; border-left: 1.5px solid var(--hair); }
+  .chart-cap { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+               color: var(--muted); margin-bottom: 11px; }
+  .crow { display: grid; grid-template-columns: 128px 1fr 52px; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .cname { font-size: 12.5px; font-weight: 600; text-align: right; }
+  .ctrack { position: relative; height: 18px; border-radius: 5px; background: #eef3f8;
+            box-shadow: inset 0 1px 2px rgba(24,58,89,.08); }
+  .cfill { position: absolute; left:0; top:0; bottom:0; border-radius: 5px;
+           background: linear-gradient(180deg,#3f8ed0,var(--blue-d));
+           box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 3px 10px -6px rgba(20,70,120,.7); }
+  .cfill.late { background: linear-gradient(180deg,#d4553f,#a8301f); }
+  .cval { font-size: 12.5px; font-weight: 700; font-family: var(--mono); color: var(--navy); text-align: right; }
+
+  /* Coverage line, then the file the detail leaves in. */
+  .cover {
+    display: flex; align-items: center; gap: 10px; margin-top: 15px;
+    padding: 10px 13px; border-radius: 9px;
+    background: linear-gradient(180deg,#f1faf4,#e6f5ec); border: 1.5px solid var(--green-br);
+    font-size: 14px; color: #1b5c3a; line-height: 1.4;
+  }
+  .cover b { color: var(--green-t); }
+
+  .file {
+    display: flex; align-items: center; gap: 13px; margin-top: 10px;
+    padding: 11px 14px; border-radius: 10px;
+    background: linear-gradient(180deg,#fbfdff,#f1f7fc); border: 1.5px solid #c9dcec;
+  }
+  .file-ic {
+    width: 34px; height: 41px; flex: none; border-radius: 4px 9px 4px 4px;
+    background: linear-gradient(180deg,#d4553f,#a8301f); box-shadow: var(--lift);
+    color: #fff; font-family: var(--mono); font-size: 10.5px; font-weight: 700;
+    display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px;
+  }
+  .file-txt { flex: 1; }
+  .file-name { font-size: 14.5px; font-weight: 600; }
+  .file-meta { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .file-acts { display: flex; gap: 8px; }
+
+  .fig-note { margin-top: 20px; padding-top: 15px; }
+</style>
+</head>
+<body>
+
+<div id="canvas">
+
+  <div class="fig-title">What comes back now</div>
+  <div class="fig-sub">
+    A mock of the report card, for the test business holding about eleven hundred
+    payables. The summary is totalled over every row; only the detail meets the cap.
+  </div>
+
+  <div class="win">
+    <div class="win-bar">
+      <div class="win-dots"><i></i><i></i><i></i></div>
+      Testing workspace — chat
+    </div>
+
+    <div class="win-body">
+      <div class="ask"><span>Run the payables report for this business.</span></div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Payables by status</div>
+            <div class="card-sub">1,100 payables &middot; $822,003.47 outstanding</div>
+          </div>
+          <div class="asof">
+            data as of
+            <b>14:32:07 UTC</b>
+            refreshed every 15 min
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="grid">
+            <div class="sum">
+              <div class="sum-cell">
+                <div class="sum-amt">$184,920</div>
+                <div class="sum-name">Awaiting approval</div>
+                <div class="sum-cnt">312 items</div>
+              </div>
+              <div class="sum-cell">
+                <div class="sum-amt">$402,119</div>
+                <div class="sum-name">Approved</div>
+                <div class="sum-cnt">468 items</div>
+              </div>
+              <div class="sum-cell">
+                <div class="sum-amt">$173,560</div>
+                <div class="sum-name">Scheduled</div>
+                <div class="sum-cnt">241 items</div>
+              </div>
+              <div class="sum-cell late">
+                <div class="sum-amt">$61,404</div>
+                <div class="sum-name">Overdue</div>
+                <div class="sum-cnt">79 items</div>
+              </div>
+            </div>
+
+            <div class="chart">
+              <div class="chart-cap">Share of the amount owed</div>
+              <div class="crow">
+                <div class="cname">Approved</div>
+                <div class="ctrack"><div class="cfill" style="width:48.9%"></div></div>
+                <div class="cval">48.9%</div>
+              </div>
+              <div class="crow">
+                <div class="cname">Awaiting approval</div>
+                <div class="ctrack"><div class="cfill" style="width:22.5%"></div></div>
+                <div class="cval">22.5%</div>
+              </div>
+              <div class="crow">
+                <div class="cname">Scheduled</div>
+                <div class="ctrack"><div class="cfill" style="width:21.1%"></div></div>
+                <div class="cval">21.1%</div>
+              </div>
+              <div class="crow">
+                <div class="cname">Overdue</div>
+                <div class="ctrack"><div class="cfill late" style="width:7.5%"></div></div>
+                <div class="cval">7.5%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cover">
+            <span class="pill green">1,100 of 1,100</span>
+            <div>
+              <b>The totals above cover every payable</b>, not the rows that fit.
+              The detail is 1,100 rows, past the hundred this card renders.
+            </div>
+          </div>
+
+          <div class="file">
+            <div class="file-ic">PDF</div>
+            <div class="file-txt">
+              <div class="file-name">payables-by-status.pdf</div>
+              <div class="file-meta">1,100 rows &middot; as of 14:32:07 UTC</div>
+            </div>
+            <div class="file-acts">
+              <span class="pill">Excel</span>
+              <span class="pill">CSV</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fig-note">
+    <b>A mock, not a screenshot.</b> The panel it is drawn from carries a business
+    name, a task id and a tenant guid. What is faithful is the shape: the summary and
+    the chart are totalled across all 1,100 rows by paging the warehouse read, so a
+    report whose detail is truncated still carries the whole business's numbers — the
+    mistake that started this was a total over the rows that happened to arrive. The
+    as-of stamp is the high-water mark of the data, not the time the job finished.
+    Under a hundred rows the detail renders in the card instead of leaving as a file.
+  </div>
+
+</div>
+
+</body>
+</html>

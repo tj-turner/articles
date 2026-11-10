@@ -1,0 +1,69 @@
+<!doctype html>
+<!--
+  "Four nested budgets" — Two Minutes Was a Guess.
+
+  Budget bars rather than a strip or a flow: the claim is containment, and bars
+  sharing a left origin show containment without having to say it — each window
+  visibly runs past the one above. Drawn to scale against the 25-minute sweep so
+  the two-minute dependency call reads as the sliver it is.
+
+  The threshold runs through the bars at 15 minutes because that is the number
+  the article is about, and the point of the figure is that two larger windows
+  extend past it on purpose.
+
+  Render, from support-files/:
+    node local/render-figure.js nested-budgets.html local/nested-budgets.png
+    magick local/nested-budgets.png -quality 92 -define webp:method=6 ../nested-budgets.webp
+    magick local/nested-budgets.png -strip -define png:compression-level=9 ../nested-budgets.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Four nested budgets</title>
+<link rel="stylesheet" href="../../../figure-kit/kit.css">
+</head>
+<body>
+
+  <div class="fig-title">Four nested budgets</div>
+  <div class="fig-sub">
+    Each window contains the one before it, drawn to scale against the sweep.
+  </div>
+
+  <div class="bars">
+    <div class="bar-zone">
+      <div class="threshold" style="left: 60%">
+        <div class="threshold-label">15 min — the invocation budget</div>
+      </div>
+    </div>
+
+    <div class="bar-row">
+      <div class="bar-name">One call to the API<span>stalled dependency &rarr; <code>Failed</code></span></div>
+      <div class="bar-track"><div class="bar-fill" style="width: 8%"></div></div>
+      <div class="bar-val">2m</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-name">One invocation<span>host cancels &rarr; <code>TimedOut</code><br>&ldquo;wall-clock limit reached&rdquo;</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width: 60%"></div></div>
+      <div class="bar-val">15m</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-name">Service Bus lock renewal<span>below this, a message redelivers mid-run</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width: 80%"></div></div>
+      <div class="bar-val">20m</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-name">Abandonment sweep<span>sweep retires it &rarr; <code>TimedOut</code><br>&ldquo;no worker finalized&rdquo;</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div>
+      <div class="bar-val">25m</div>
+    </div>
+  </div>
+
+  <div class="fig-note">
+    The three outer numbers live in two files across two services: the invocation budget
+    and the lock renewal in the workers&rsquo; <code>host.json</code>, the sweep in the
+    data-owner service&rsquo;s <code>appsettings.json</code>. A test asserts the ordering,
+    because nothing else reads all three.
+  </div>
+
+</body>
+</html>

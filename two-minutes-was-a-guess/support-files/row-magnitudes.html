@@ -1,0 +1,58 @@
+<!doctype html>
+<!--
+  "Three row counts" — Two Minutes Was a Guess.
+
+  A stat band rather than a table: the claim is magnitudes, and three numbers
+  four orders of magnitude apart are what the argument rests on. As a two-column
+  table this was a headerless band on Medium, which renders as a blank heading
+  row and reads as a mistake.
+
+  Tinted by verdict so the escalation is visible without reading: the page size
+  is fine, the typical business is already past the gather, the largest is past
+  anything paged.
+
+  Render, from support-files/:
+    node local/render-figure.js row-magnitudes.html local/row-magnitudes.png
+    magick local/row-magnitudes.png -quality 92 -define webp:method=6 ../row-magnitudes.webp
+    magick local/row-magnitudes.png -strip -define png:compression-level=9 ../row-magnitudes.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Three row counts</title>
+<link rel="stylesheet" href="../../../figure-kit/kit.css">
+</head>
+<body class="narrow">
+
+  <div class="fig-title">What the gather was being asked for</div>
+  <div class="fig-sub">
+    Three row counts, four orders of magnitude apart.
+  </div>
+
+  <div class="stats">
+    <div class="stat ok">
+      <div class="stat-num">50</div>
+      <div class="stat-label">rows one page carried</div>
+      <div class="stat-sub">the source's limit, pinned there by a per-payable fan-out</div>
+    </div>
+    <div class="stat warm">
+      <div class="stat-num">~1,200</div>
+      <div class="stat-label">rows a typical business holds</div>
+      <div class="stat-sub">already past the eight-hundred-row ceiling the gather could reach</div>
+    </div>
+    <div class="stat hot">
+      <div class="stat-num">500,000+</div>
+      <div class="stat-label">rows our largest business holds</div>
+      <div class="stat-sub">not a chat response at any budget, and not sixteen calls either</div>
+    </div>
+  </div>
+
+  <div class="fig-note">
+    The middle number is the one that decided it. A gather that only fails on the largest
+    customer gets scheduled; a gather that cannot finish for an ordinary business is a tier
+    that does not work. Nobody had looked at that column before the reports started timing
+    out.
+  </div>
+
+</body>
+</html>

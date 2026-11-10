@@ -1,0 +1,140 @@
+<!doctype html>
+<!--
+  Header for Two Minutes Was a Guess. Copied from figure-kit/header-template.html;
+  only the title, the subtitle and the card figure differ from it.
+
+  The card holds a miniature of nested-budgets.html. Article 5's header
+  deliberately avoided carrying its own body figure, because that figure sat in
+  the first screen and a half and a reader met it twice. The full nested-budgets
+  figure here lands in section seven of twelve, past two code blocks and a table,
+  so the miniature works as a promise rather than a repeat — and the article is
+  about a budget, so the budget bars are the figure that belongs on the front.
+
+  The threshold is drawn through the bars rather than beside them, because the
+  claim is that two of the four windows extend past the invocation budget on
+  purpose. Bars are hand-rolled compact here rather than reusing .bars from the
+  kit: that grid reserves 300px for labels and 118px for values, which does not
+  fit a 572px card.
+
+  Render, from support-files/:
+    node local/render-figure.js header-two-minutes-was-a-guess.html local/header.png
+    magick local/header.png -quality 92 -define webp:method=6 ../header-two-minutes-was-a-guess.webp
+    magick local/header.png -strip -define png:compression-level=9 ../header-two-minutes-was-a-guess.png
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Two Minutes Was a Guess — header</title>
+<link rel="stylesheet" href="../../../figure-kit/kit.css">
+<style>
+  body { width: 1600px; padding: 0; background: #fff; }
+
+  /* Compact budget bars, scaled for the header card. */
+  .mini { position: relative; padding-top: 26px; }
+  .mini-row {
+    display: grid; grid-template-columns: 128px 1fr 56px;
+    align-items: center; gap: 12px; margin-bottom: 11px;
+  }
+  .mini-name { font-size: 12.5px; font-weight: 600; text-align: right; line-height: 1.25; }
+  .mini-track {
+    position: relative; height: 26px; border-radius: 7px; background: #eef3f8;
+    box-shadow: inset 0 1px 2px rgba(24,58,89,.08);
+  }
+  .mini-fill {
+    height: 100%; border-radius: 7px;
+    background: linear-gradient(180deg,#3f8ed0,#2c6fb3);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px -5px rgba(28,84,140,.6);
+  }
+  .mini-fill.sliver { background: linear-gradient(180deg,#e0ab3c,#c08a1e);
+                      box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 4px 12px -5px rgba(160,115,20,.6); }
+  .mini-fill.outer  { background: linear-gradient(180deg,#2f6fa8,#1d4a74); }
+  .mini-val { font-size: 13px; font-weight: 700; font-family: var(--mono); color: var(--navy); }
+  /* z-index, or the dashes sit under the fills and the threshold only shows in
+     the gaps between bars — which is the opposite of drawing it through them. */
+  .mini-zone { position: absolute; top: 26px; bottom: 11px; left: 140px; right: 68px;
+               pointer-events: none; z-index: 3; }
+  /* A white carrier strip under the red dashes: red alone is near-invisible
+     where the line crosses a dark blue fill, which is most of its length. */
+  .mini-thresh { position: absolute; top: -4px; bottom: -4px; width: 6px;
+                 margin-left: -3px; background: rgba(255,255,255,.92);
+                 border-radius: 3px; box-shadow: 0 0 0 1px rgba(24,58,89,.1); }
+  .mini-thresh::before {
+    content: ""; position: absolute; left: 2px; top: 2px; bottom: 2px; width: 0;
+    border-left: 2.5px dashed var(--red);
+  }
+  .mini-thresh-label {
+    position: absolute; top: -22px; left: 50%; transform: translateX(-50%); white-space: nowrap;
+    font-family: var(--mono); font-size: 11.5px; font-weight: 700; color: var(--red-t);
+    background: #fdeeec; border: 1px solid #edbcb4; border-radius: 999px; padding: 3px 9px;
+  }
+</style>
+</head>
+<body>
+
+<div class="hdr" id="canvas">
+
+  <div>
+    <div class="hdr-kicker"><span class="dot"></span>Building AI Infrastructure</div>
+
+    <div class="hdr-title">Two Minutes<br>Was a <em>Guess</em></div>
+    <div class="hdr-rule"></div>
+    <div class="hdr-sub">
+      What a month of testing did to a published budget — and to the number
+      underneath it that we had assumed was the platform's.
+    </div>
+
+    <div class="hdr-by">
+      <div class="hdr-mark">TT</div>
+      <div class="hdr-byline">
+        <b>Tim Turner</b>
+        .NET, Azure SQL, and AI tooling
+      </div>
+    </div>
+  </div>
+
+  <div class="hdr-art">
+    <div class="hdr-card">
+      <div class="fig-title">Four nested budgets</div>
+      <div class="fig-sub">Each window has to contain the one before it.</div>
+
+      <div class="mini">
+        <div class="mini-zone">
+          <div class="mini-thresh" style="left: 60%">
+            <div class="mini-thresh-label">15 min</div>
+          </div>
+        </div>
+
+        <div class="mini-row">
+          <div class="mini-name">One call to the API</div>
+          <div class="mini-track"><div class="mini-fill sliver" style="width: 8%"></div></div>
+          <div class="mini-val">2m</div>
+        </div>
+        <div class="mini-row">
+          <div class="mini-name">One invocation</div>
+          <div class="mini-track"><div class="mini-fill" style="width: 60%"></div></div>
+          <div class="mini-val">15m</div>
+        </div>
+        <div class="mini-row">
+          <div class="mini-name">Lock renewal</div>
+          <div class="mini-track"><div class="mini-fill outer" style="width: 80%"></div></div>
+          <div class="mini-val">20m</div>
+        </div>
+        <div class="mini-row">
+          <div class="mini-name">Abandonment sweep</div>
+          <div class="mini-track"><div class="mini-fill outer" style="width: 100%"></div></div>
+          <div class="mini-val">25m</div>
+        </div>
+      </div>
+
+      <div class="node green" style="margin-top:18px; padding:13px 15px">
+        <div class="node-name" style="font-size:14.5px">The one I published was the 2-minute bar</div>
+        <div class="node-meta" style="margin-top:5px">Sized against the steps a report takes, not the rows it is asked for.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hdr-foot"></div>
+</div>
+
+</body>
+</html>
