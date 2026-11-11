@@ -6,7 +6,7 @@ user-acceptance testing met a business holding about eleven hundred payables,
 and the budget went — along with the ten-minute ceiling we had assumed was the
 platform's and had actually written ourselves.
 
-**[Read the full article on Level Up Coding →](#)**
+**[Read the full article on Level Up Coding →](https://levelup.gitconnected.com/two-minutes-was-a-guess-what-a-month-of-testing-did-to-a-published-budget-e48d7c0b856e)**
 
 Revises [`ten-second-budget/`](../ten-second-budget/), which is where the
 two-minute budget and the host-timeout margin were published.
